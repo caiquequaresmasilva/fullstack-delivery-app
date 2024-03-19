@@ -1,12 +1,13 @@
+import { Navigate, Route, Routes } from "react-router-dom"
+import { Login } from "./pages/Login"
 
 
 function App() {
-
   return (
-    <div>
-      <h1>Web App Running!</h1>
-    </div>
+    <Routes>
+      <Route path='/' element={<Navigate replace to='/login' />} />
+      <Route path='/login' element={<Login />} />
+    </Routes>
   )
 }
-
 export default App
