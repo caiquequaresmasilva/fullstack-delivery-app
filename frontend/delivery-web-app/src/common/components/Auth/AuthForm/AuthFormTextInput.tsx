@@ -1,10 +1,10 @@
 import { memo, useState } from "react"
-import { capitalize, debounceOnChange, validateField } from "../../utils"
-type AuthTextInputProps = {
+import { capitalize, debounceOnChange, validateField } from "../../../utils"
+type AuthFormTextInputProps = {
   setState: SetState<string>
   name: FieldName
 }
-export default memo(function AuthTextInput({ setState, name }: AuthTextInputProps) {
+export default memo(function AuthFormTextInput({ setState, name }: AuthFormTextInputProps) {
   const [error, setError] = useState('')
   const handleOnChange = ({ target: { value } }: OnChangeType) => {
     const { isValid, message } = validateField(name, value)
