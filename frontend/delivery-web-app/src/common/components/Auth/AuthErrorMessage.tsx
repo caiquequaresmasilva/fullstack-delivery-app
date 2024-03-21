@@ -1,7 +1,7 @@
 import { memo } from "react"
 
 type AuthErrorMessageProps = {
-  message: string
+  message?: string
 }
 export default memo(function AuthErrorMessage({ message }: AuthErrorMessageProps) {
   return (

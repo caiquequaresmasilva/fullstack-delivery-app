@@ -5,7 +5,7 @@ type AuthFormNavigateButtonProps = {
   path: AuthPaths
   label: string
 }
-export default memo(function AuthFormNavigateButton({ label, path }: AuthFormNavigateButtonProps) {
+export default memo(function FormNavigateButton({ label, path }: AuthFormNavigateButtonProps) {
   const navigate = useNavigate()
   const handleClick = () => navigate(path)
 

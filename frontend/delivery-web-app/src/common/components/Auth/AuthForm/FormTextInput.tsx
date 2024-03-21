@@ -1,17 +1,17 @@
 import { memo, useState } from "react"
 import { capitalize, debounceOnChange, validateField } from "../../../utils"
 type AuthFormTextInputProps = {
-  setState: SetState<string>
+  setState?: SetState<string>
   name: FieldName
 }
-export default memo(function AuthFormTextInput({ setState, name }: AuthFormTextInputProps) {
+export default memo(function FormTextInput({ setState, name }: AuthFormTextInputProps) {
   const [error, setError] = useState('')
   const handleOnChange = ({ target: { value } }: OnChangeType) => {
     const { isValid, message } = validateField(name, value)
-    if (isValid) {
+    if (isValid && setState) {
       setState(value)
       setError('')
-    } else {
+    } else if(setState) {
       setState('')
       setError(message)
     }
@@ -19,7 +19,7 @@ export default memo(function AuthFormTextInput({ setState, name }: AuthFormTextI
   return (
     <>
       <input
-        type="text"
+        type={name}
         name={name}
         placeholder={capitalize(name)}
         onChange={debounceOnChange(handleOnChange)}
