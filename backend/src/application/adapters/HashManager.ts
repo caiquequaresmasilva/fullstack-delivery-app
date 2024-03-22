@@ -1,4 +1,4 @@
 export interface HashManager {
-  generate(str: string): string
-  compare(str: string, hash: string): boolean
+  generate(str: string): Promise<string>;
+  compare(str: string, hash: string): Promise<boolean>;
 }
