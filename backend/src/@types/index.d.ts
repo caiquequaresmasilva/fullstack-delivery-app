@@ -6,3 +6,8 @@ type UserProps = {
   password: string;
   role: Role;
 };
+// APPLICATION
+type UserResponse = {
+  token: string;
+  role: Role;
+};
