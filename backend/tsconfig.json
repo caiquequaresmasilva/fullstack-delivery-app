@@ -106,7 +106,7 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  "include": ["src/**/*", "test/unit/user.spec.ts", "test/unit/userService.spec.ts"],
+  "include": ["src/**/*","test/unit/**/*"],
   "exclude": [
     "node_modules",
     "**/*.spec.ts",
