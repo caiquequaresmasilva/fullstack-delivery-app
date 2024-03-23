@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "./src/infra/database/prisma"
 }
 
 datasource db {
@@ -55,5 +54,6 @@ model DeliveryUser {
   id  String @id @default(uuid())
   name String
   email String @unique
+  password String
   role Role  
 } 
