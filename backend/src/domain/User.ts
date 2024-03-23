@@ -1,6 +1,10 @@
 export class User {
   constructor(private props: UserProps & Partial<Id>) {}
 
+  public get name(): string {
+    return this.props.name;
+  }
+
   public get email(): string {
     return this.props.email;
   }
