@@ -1,7 +1,6 @@
 export class PasswordEmailError extends Error {
-  public status: number;
-  constructor(message = 'Password or email incorrect', status=400) {
+  constructor(message = 'Password or email incorrect', ) {
     super(message);
-    this.status = status;
+    this.name = 'BAD_REQUEST'
   }
 }

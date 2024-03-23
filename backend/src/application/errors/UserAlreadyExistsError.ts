@@ -1,7 +1,6 @@
 export class UserAlreadyExistsError extends Error {
-  public status: number;
-  constructor(message='User already exists.', status= 400) {
+  constructor(message='User already exists.') {
     super(message);
-    this.status = status;
+    this.name = 'BAD_REQUEST'
   }
 }
