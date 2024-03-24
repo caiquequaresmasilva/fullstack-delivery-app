@@ -10,6 +10,7 @@ type Login = {
 };
 type PostUserServiceResponse = {
   error?: string;
+  role?: Role;
 };
 type FieldName = "email" | "password";
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
@@ -23,6 +24,12 @@ type PostUserResponse = {
   role?: Role;
   token?: string;
   error?: string;
+};
+type ApiError = {
+  status: number;
+  data: {
+    error: string;
+  };
 };
 // SERVICES TYPES
 type PostUserService = (body: User) => Promise<PostUserServiceResponse>;
