@@ -1,7 +1,7 @@
 import { Auth } from "../../common/components/Auth";
 
 export default function Login() {
-  const service: PostUser = async ({ email, password }) => {
+  const service: PostUserService = async ({ email, password }) => {
     console.log(email, password)
     return {}
   }
