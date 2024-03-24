@@ -12,7 +12,6 @@ type TokenPayload = Omit<UserProps,'password'> & Id
 // APPLICATION
 type UserResponse = {
   name: string,
-  email: string,
   token: string;
   role: Role;
 };

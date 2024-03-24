@@ -20,4 +20,8 @@ export class User {
   public get id(): string {
     return this.props.id || '';
   }
+
+  public toJSON(){
+    return this.props;
+  }
 }

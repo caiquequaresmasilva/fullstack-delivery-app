@@ -5,6 +5,7 @@ export default function errorMiddleware(
   err: Error,
   _req: Request,
   res: Response,
+  next: NextFunction
 ) {
   const { name, message } = err;
   const status = HttpStatus[name as keyof typeof HttpStatus];
