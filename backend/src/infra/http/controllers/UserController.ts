@@ -9,7 +9,7 @@ export default class UserController {
     const { email, password, role, name } = req.body;
     try {
       const response = await this.service.create({name, email, password, role });
-      res.status(HttpStatus.CREATED).json(response);
+      return res.status(HttpStatus.CREATED).json(response);
     } catch (error) {
       next(error);
     }
@@ -19,7 +19,7 @@ export default class UserController {
     const { email, password } = req.body;
     try {
       const response = await this.service.login({ email, password });
-      res.status(HttpStatus.OK).json(response);
+      return res.status(HttpStatus.OK).json(response);
     } catch (error) {
       next(error);
     }

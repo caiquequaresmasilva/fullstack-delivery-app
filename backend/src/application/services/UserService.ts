@@ -18,7 +18,6 @@ export default class UserService {
   }: TokenPayload): UserResponse {
     return {
       name,
-      email,
       token: this.token.generate({ name, email, role, id }),
       role,
     };

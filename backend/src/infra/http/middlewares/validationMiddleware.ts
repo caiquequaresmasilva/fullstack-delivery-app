@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { userSchema } from '../../schemas';
 import { HttpStatus } from '../../enums';
 
-export async function validationHandler(
+export async function validationMiddleware(
   req: Request,
   res: Response,
   next: NextFunction,
