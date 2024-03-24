@@ -1,4 +1,5 @@
 import express from 'express';
+import morgan from 'morgan';
 import cors from 'cors';
 import { userRoutes } from './http/routes';
 import { errorMiddleware } from './http/middlewares';
@@ -22,6 +23,7 @@ export default class App {
     this.app.use(accessControl);
     this.app.use(cors());
     this.app.use(express.json());
+    this.app.use(morgan('common'))
   }
 
   private setRoutes(): void {
