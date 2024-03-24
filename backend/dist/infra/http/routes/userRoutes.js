@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const factories_1 = require("../../factories");
+const middlewares_1 = require("../middlewares");
+const userRoutes = (0, express_1.Router)();
+const userController = (0, factories_1.makeUserController)();
+const createUserGuard = (0, factories_1.makeCreateUserGuard)();
+userRoutes.post('/', (req, res, next) => createUserGuard.handle(req, res, next), middlewares_1.validationMiddleware, (req, res, next) => userController.create(req, res, next));
+userRoutes.post('/login', (req, res, next) => userController.login(req, res, next));
+exports.default = userRoutes;
