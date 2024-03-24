@@ -12,7 +12,8 @@
     "build": "rimraf dist && tsc",
     "ts-check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "prisma generate"
   },
   "author": "Caíque Quaresma Silva",
   "license": "ISC",
