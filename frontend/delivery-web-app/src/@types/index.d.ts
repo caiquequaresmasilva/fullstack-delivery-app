@@ -31,5 +31,9 @@ type ApiError = {
     error: string;
   };
 };
+type TextInputProps = {
+  setState: SetState<string>;
+  name: FieldName;
+};
 // SERVICES TYPES
 type PostUserService = (body: User) => Promise<PostUserServiceResponse>;
