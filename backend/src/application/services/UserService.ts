@@ -49,7 +49,7 @@ export default class UserService {
     password,
   }: LoginProps): Promise<UserResponse> {
     const user = await this.repo.findByEmail(email);
-    if (!user || !this.hash.compare(password, user.hashedPassword)) {
+    if (!user || !(await this.hash.compare(password, user.hashedPassword))) {
       throw new PasswordEmailError();
     }
     return this._makeResponse({
