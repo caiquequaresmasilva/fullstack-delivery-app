@@ -1,10 +1,10 @@
 import { memo } from "react"
 
-type AuthFormSubmitButtonProps = {
+type SubmitButtonProps = {
   disable?: boolean
   label: string
 }
-export default memo(function FormSubmitButton({ disable, label }: AuthFormSubmitButtonProps) {
+export default memo(function FormSubmitButton({ disable, label }: SubmitButtonProps) {
   return (
     <button type="submit" disabled={disable}>{label}</button>
   )
