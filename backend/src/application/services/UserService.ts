@@ -10,12 +10,7 @@ export default class UserService {
     private readonly hash: HashManager,
   ) {}
 
-  private _makeResponse({
-    email,
-    name,
-    role,
-    id,
-  }: TokenPayload): UserResponse {
+  private _makeResponse({ email, name, role, id }: TokenPayload): UserResponse {
     return {
       name,
       token: this.token.generate({ name, email, role, id }),
@@ -44,10 +39,7 @@ export default class UserService {
     return this._makeResponse({ name, email, role, id });
   }
 
-  async login({
-    email,
-    password,
-  }: LoginProps): Promise<UserResponse> {
+  async login({ email, password }: LoginProps): Promise<UserResponse> {
     const user = await this.repo.findByEmail(email);
     if (!user || !(await this.hash.compare(password, user.hashedPassword))) {
       throw new PasswordEmailError();
@@ -58,5 +50,9 @@ export default class UserService {
       role: user.role as Role,
       id: user.id,
     });
+  }
+
+  async getUsers() {
+    return this.repo.getUsers();
   }
 }
