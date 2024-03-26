@@ -1,7 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import { userRoutes } from './http/routes';
+import { productRoutes, userRoutes } from './http/routes';
 import { errorMiddleware } from './http/middlewares';
 
 export default class App {
@@ -29,6 +29,7 @@ export default class App {
 
   private setRoutes(): void {
     this.app.use('/user', userRoutes);
+    this.app.use('/product',productRoutes)
     this.app.get('/', (_req, res) => {
         res.status(200).send('Delivery API Running!');
       });
