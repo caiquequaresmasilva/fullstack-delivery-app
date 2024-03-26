@@ -24,4 +24,13 @@ export default class UserController {
       next(error);
     }
   }
+
+  async getUsers(_req: Request, res: Response, next: NextFunction) {
+    try {
+      const response = await this.service.getUsers();
+      return res.status(HttpStatus.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
