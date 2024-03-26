@@ -4,6 +4,22 @@ import { prismaClient } from '../database/prisma/prismaClient';
 
 export default class PrismaUserRepository implements UserRepository {
   constructor(private readonly prisma = prismaClient) {}
+
+  async getUsers(): Promise<UserWithoutPassword[]> {
+    return this.prisma.deliveryUser.findMany({
+      where: {
+        role: {
+          not: 'admin',
+        },
+      },
+      select: {
+        email: true,
+        name: true,
+        role: true,
+        id: true,
+      },
+    });
+  }
   async create(data: User): Promise<Id> {
     const { id } = await this.prisma.deliveryUser.create({
       data: data.toJSON(),

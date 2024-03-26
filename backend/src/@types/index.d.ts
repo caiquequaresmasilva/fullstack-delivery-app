@@ -7,11 +7,17 @@ type UserProps = {
   password: string;
   role: Role;
 };
-type LoginProps = Omit<UserProps,'role' | 'name'>
-type TokenPayload = Omit<UserProps,'password'> & Id
+type UserWithoutPassword = {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+};
+type LoginProps = Omit<UserProps, 'role' | 'name'>;
+type TokenPayload = Omit<UserProps, 'password'> & Id;
 // APPLICATION
 type UserResponse = {
-  name: string,
+  name: string;
   token: string;
   role: Role;
 };
