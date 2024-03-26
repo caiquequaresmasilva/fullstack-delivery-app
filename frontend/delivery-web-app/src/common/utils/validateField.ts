@@ -8,6 +8,10 @@ const patterns = Object.freeze({
     message:
       "The password must contain at least 8 characters, with uppercase letters, lowercase letters and numbers.",
   },
+  name: {
+    pattern: "^(?=.*[a-zA-Z])[a-zA-Z\\sáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ']{3,}$",
+    message: "The name must contain at least 3 characters, with only letters",
+  },
 });
 
 export default function validateField(field: FieldName, value: string) {

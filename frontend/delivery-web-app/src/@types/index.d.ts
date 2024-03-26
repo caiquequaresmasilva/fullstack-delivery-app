@@ -12,7 +12,7 @@ type PostUserServiceResponse = {
   error?: string;
   role?: Role;
 };
-type FieldName = "email" | "password";
+type FieldName = "email" | "password" | "name";
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 type OnChangeType = React.ChangeEvent<HTMLInputElement>;
 type AuthPaths = "/login" | "/signup";
