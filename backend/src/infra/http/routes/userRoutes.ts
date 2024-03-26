@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import {
+  makeAuthMiddleware,
   makeCreateUserGuard,
-  makeRoleGuard,
   makeUserController,
 } from '../../factories';
-import { validationMiddleware } from '../middlewares';
+import { RequestWithUser, roleGuard, validationMiddleware } from '../middlewares';
 
 const userRoutes = Router();
 const userController = makeUserController();
 const createUserGuard = makeCreateUserGuard();
-const adminRoleGuard = makeRoleGuard('admin');
+const authMiddleware = makeAuthMiddleware();
 
 userRoutes.post(
   '/',
@@ -22,7 +22,10 @@ userRoutes.post('/login', (req, res, next) =>
   userController.login(req, res, next),
 );
 
-userRoutes.use((req, res, next) => adminRoleGuard.handle(req, res, next));
+userRoutes.use((req, res, next) =>
+  authMiddleware.handle(req as RequestWithUser, res, next),
+);
+userRoutes.use((req,res,next) => roleGuard('admin')(req as RequestWithUser,res,next));
 userRoutes.get('/', (req, res, next) =>
   userController.getUsers(req, res, next),
 );
