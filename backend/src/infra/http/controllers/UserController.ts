@@ -8,7 +8,12 @@ export default class UserController {
   async create(req: Request, res: Response, next: NextFunction) {
     const { email, password, role, name } = req.body;
     try {
-      const response = await this.service.create({name, email, password, role });
+      const response = await this.service.create({
+        name,
+        email,
+        password,
+        role,
+      });
       return res.status(HttpStatus.CREATED).json(response);
     } catch (error) {
       next(error);
@@ -29,6 +34,16 @@ export default class UserController {
     try {
       const response = await this.service.getUsers();
       return res.status(HttpStatus.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async delete(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    try {
+      await this.service.delete(id);
+      return res.status(HttpStatus.OK).json({ message: 'User deleted' });
     } catch (error) {
       next(error);
     }

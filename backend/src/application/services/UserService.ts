@@ -55,4 +55,8 @@ export default class UserService {
   async getUsers() {
     return this.repo.getUsers();
   }
+
+  async delete(id: string) {
+    await this.repo.delete(id);
+  }
 }

@@ -26,5 +26,8 @@ userRoutes.use((req, res, next) => adminRoleGuard.handle(req, res, next));
 userRoutes.get('/', (req, res, next) =>
   userController.getUsers(req, res, next),
 );
+userRoutes.delete('/:id', (req, res, next) =>
+  userController.delete(req, res, next),
+);
 
 export default userRoutes;
