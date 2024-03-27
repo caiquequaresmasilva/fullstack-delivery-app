@@ -72,6 +72,7 @@ model DeliveryProduct {
   name String @unique
   imagePath String
   price Decimal @db.Decimal(4,2)
+  orders DeliveryProductsOnOrders[]
 }
 
 model DeliveryOrder {
@@ -85,4 +86,14 @@ model DeliveryOrder {
   deliveryNumber String
   saleDate DateTime @default(now())
   status Status @default(Pending)
+  products DeliveryProductsOnOrders[]
+}
+
+model DeliveryProductsOnOrders {
+  product DeliveryProduct @relation(fields: [productId], references: [id])
+  productId String
+  order DeliveryOrder @relation(fields: [orderId],references: [id])
+  orderId String
+  quantity Int
+  @@id([productId,orderId])
 }
