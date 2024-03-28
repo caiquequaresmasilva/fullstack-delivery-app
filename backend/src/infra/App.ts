@@ -1,7 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import { productRoutes, userRoutes } from './http/routes';
+import { orderRoutes, productRoutes, userRoutes } from './http/routes';
 import { errorMiddleware } from './http/middlewares';
 
 export default class App {
@@ -15,7 +15,7 @@ export default class App {
   private _config(): void {
     const accessControl: express.RequestHandler = (_req, res, next) => {
       res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS,PUT');
+      res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,PATCH,PUT');
       res.header('Access-Control-Allow-Headers', '*');
       next();
     };
@@ -30,6 +30,8 @@ export default class App {
   private setRoutes(): void {
     this.app.use('/user', userRoutes);
     this.app.use('/product',productRoutes)
+    this.app.use('/order',orderRoutes)
+
     this.app.get('/', (_req, res) => {
         res.status(200).send('Delivery API Running!');
       });
