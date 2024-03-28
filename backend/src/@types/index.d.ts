@@ -2,6 +2,12 @@
 type Role = 'customer' | 'seller' | 'admin';
 type Status = 'Pending' | 'Preparing' | 'Moving' | 'Delivered';
 type Id<T> = { id: T };
+type QueryParams = {
+  orderId?: number;
+  status?: Status;
+  userField: string;
+  userId: string;
+};
 
 // USER
 type UserProps = {
@@ -61,7 +67,7 @@ type OrderDetailed = {
   totalPrice: number;
   saleDate: Date;
   status: Status;
-  customer: string
-  seller: string
-  products: Product[]
+  customer: string;
+  seller: string;
+  products: Product[];
 };

@@ -13,19 +13,19 @@ export default class OrderService {
     };
   }
 
-  async getOrders(userId: string) {
-    return this.repo.getOrders(userId);
+  async getOrders({ userId, userField }: QueryParams) {
+    return this.repo.getOrders({ userId, userField });
   }
 
-  async getOrder(id: number, userId: string) {
-    const order = await this.repo.getOrder(id, userId);
+  async getOrder({ userId, userField, orderId }: QueryParams) {
+    const order = await this.repo.getOrder({ orderId, userId, userField });
     if (!order) {
       throw new OrderNotFoundError();
     }
     return order;
   }
 
-  async updateStatus(id: number, userId: string, status: Status) {
-    await this.repo.updateStatus(id, userId, status);
+  async updateStatus({ userField, userId, orderId, status }: QueryParams) {
+    await this.repo.updateStatus({ userField, userId, orderId, status });
   }
 }
