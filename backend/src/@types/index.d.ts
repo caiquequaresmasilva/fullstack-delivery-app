@@ -40,10 +40,10 @@ type DBproduct = {
   productId: string;
   quantity: number;
 };
-type Product = {
+type Product<T> = {
   quantity: number;
   name: string;
-  price: number;
+  price: T;
 };
 type RawOrder = {
   customerId: string;
@@ -54,20 +54,20 @@ type RawOrder = {
   products: RawProduct[];
 };
 
-type Order = {
+type Order<T> = {
   id: number;
   status: Status;
   saleDate: Date;
   deliveryAddress: string;
   deliveryNumber: string;
-  totalPrice: number;
+  totalPrice: T;
 };
 
-type OrderDetailed = {
-  totalPrice: number;
+type OrderDetailed<T> = {
+  totalPrice: T;
   saleDate: Date;
   status: Status;
   customer: string;
   seller: string;
-  products: Product[];
+  products: Product<T>[];
 };
