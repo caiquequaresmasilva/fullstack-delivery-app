@@ -1,5 +1,5 @@
 export class User {
-  constructor(private props: UserProps & Partial<Id>) {}
+  constructor(private props: UserProps & Partial<Id<string>>) {}
 
   public get name(): string {
     return this.props.name;
