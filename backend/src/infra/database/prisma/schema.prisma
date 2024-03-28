@@ -76,7 +76,7 @@ model DeliveryProduct {
 }
 
 model DeliveryOrder {
-  id String @id @default(uuid())
+  id Int @id @default(autoincrement())
   customer DeliveryUser @relation("customer",fields: [customerId],references: [id])
   customerId String
   seller DeliveryUser @relation("seller",fields: [sellerId],references: [id])
@@ -93,7 +93,7 @@ model DeliveryProductsOnOrders {
   product DeliveryProduct @relation(fields: [productId], references: [id])
   productId String
   order DeliveryOrder @relation(fields: [orderId],references: [id])
-  orderId String
+  orderId Int
   quantity Int
   @@id([productId,orderId])
 }
