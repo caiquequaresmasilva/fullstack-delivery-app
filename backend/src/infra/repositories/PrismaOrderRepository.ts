@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { OrderRepository } from '../../application/repositories';
 import { Decimal } from '@prisma/client/runtime/library';
+import { prismaClient } from '../database/prisma/prismaClient';
 
 type RawDBOrder = {
   totalPrice: Decimal;
@@ -21,7 +22,7 @@ type RawDBOrder = {
   }[];
 };
 export default class PrismaOrderRepository implements OrderRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma = prismaClient) {}
   private _mapProductsToDb(products: RawProduct[]): DBproduct[] {
     return products.map(({ id, quantity }) => ({ productId: id, quantity }));
   }
