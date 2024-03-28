@@ -62,9 +62,9 @@ export default class OrderController {
         orderId: Number(orderId),
         userField: `${role}Id`,
         userId,
-        status
+        status,
       });
-      return res.status(HttpStatus.OK).json(response);
+      return res.status(HttpStatus.OK).json({ message: 'Order updated' });
     } catch (error) {
       next(error);
     }
