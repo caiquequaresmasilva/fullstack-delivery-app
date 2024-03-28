@@ -8,41 +8,6 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-//  CELL PHONES APP SCHEMA
-model SequelizeMeta {
-  name String @id @db.VarChar(255)
-}
-
-model brands {
-  id       Int        @id @default(autoincrement())
-  name     String     @db.VarChar(255)
-  products products[]
-}
-
-model colors {
-  id       Int        @id @default(autoincrement())
-  name     String     @db.VarChar(255)
-  products products[]
-}
-
-model products {
-  id      String @id @db.VarChar(255)
-  name    String @db.VarChar(255)
-  brandId Int
-  model   String @db.VarChar(255)
-  price   Int
-  colorId Int
-  brands  brands @relation(fields: [brandId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  colors  colors @relation(fields: [colorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model users {
-  id       String @id @db.VarChar(255)
-  name     String @db.VarChar(255)
-  email    String @db.VarChar(255)
-  password String @db.VarChar(255)
-}
-
 // DELIVERY APP SCHEMA
 enum Role {
   customer
@@ -65,6 +30,7 @@ model DeliveryUser {
   role Role @default(customer)
   sellerOrders DeliveryOrder[] @relation("seller")
   customerOrders DeliveryOrder[] @relation("customer")
+  @@map("delivery_user")
 }
 
 model DeliveryProduct {
@@ -73,6 +39,7 @@ model DeliveryProduct {
   imagePath String
   price Decimal @db.Decimal(4,2)
   orders DeliveryProductsOnOrders[]
+  @@map("delivery_product")
 }
 
 model DeliveryOrder {
@@ -87,6 +54,7 @@ model DeliveryOrder {
   saleDate DateTime @default(now())
   status Status @default(Pending)
   products DeliveryProductsOnOrders[]
+  @@map("delivery_order")
 }
 
 model DeliveryProductsOnOrders {
@@ -96,4 +64,5 @@ model DeliveryProductsOnOrders {
   orderId Int
   quantity Int
   @@id([productId,orderId])
+  @@map("delivery_product_order")
 }

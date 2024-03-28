@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { BcryptHashManager } from '../../adapters';
+const prisma = new PrismaClient()
+const hash = new BcryptHashManager()
 
 async function main() {
   await prisma.deliveryProduct.createMany({
@@ -61,14 +63,37 @@ async function main() {
       },
     ],
   });
+
+  await prisma.deliveryUser.createMany({
+    data: [
+      {
+        name: 'Admin',
+        email: 'admin@admin.com',
+        role: 'admin',
+        password: (await hash.generate("adminADMIN42"))
+      },
+      {
+        name: 'Customer',
+        email: 'customer@customer.com',
+        role: 'customer',
+        password: (await hash.generate("customerCUSTOMER42"))
+      },
+      {
+        name: 'Seller',
+        email: 'seller@seller.com',
+        role: 'seller',
+        password: (await hash.generate("sellerSELLER42"))
+      }
+    ],
+  });
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
-  .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+  .catch(async e => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
