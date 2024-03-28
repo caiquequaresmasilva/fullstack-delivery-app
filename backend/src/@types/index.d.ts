@@ -1,6 +1,9 @@
 // DOMAIN
 type Role = 'customer' | 'seller' | 'admin';
-type Id = { id: string };
+type Status = 'Pending' | 'Preparing' | 'Moving' | 'Delivered';
+type Id<T> = { id: T };
+
+// USER
 type UserProps = {
   name: string;
   email: string;
@@ -22,4 +25,43 @@ type UserResponse = {
   role: Role;
 };
 
-// INFRA
+// ORDER
+type RawProduct = {
+  id: string;
+  quantity: number;
+};
+type DBproduct = {
+  productId: string;
+  quantity: number;
+};
+type Product = {
+  quantity: number;
+  name: string;
+  price: number;
+};
+type RawOrder = {
+  customerId: string;
+  sellerId: string;
+  deliveryAddress: string;
+  deliveryNumber: string;
+  totalPrice: number;
+  products: RawProduct[];
+};
+
+type Order = {
+  id: number;
+  status: Status;
+  saleDate: Date;
+  deliveryAddress: string;
+  deliveryNumber: string;
+  totalPrice: number;
+};
+
+type OrderDetailed = {
+  totalPrice: number;
+  saleDate: Date;
+  status: Status;
+  customer: string
+  seller: string
+  products: Product[]
+};
