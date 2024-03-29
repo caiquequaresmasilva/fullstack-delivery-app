@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { makeAuthMiddleware, makeOrderController } from '../../factories';
-import { RequestWithUser, roleGuard, statusMiddleware } from '../middlewares';
+import { RequestWithUser, orderValidationMiddleware, roleGuard, statusMiddleware } from '../middlewares';
 
 const orderRoutes = Router();
 const controller = makeOrderController();
@@ -13,6 +13,7 @@ orderRoutes.use((req, res, next) =>
 orderRoutes.post(
   '/',
   (req, res, next) => roleGuard('customer')(req as RequestWithUser, res, next),
+  orderValidationMiddleware,
   (req, res, next) => controller.create(req as RequestWithUser, res, next),
 );
 
