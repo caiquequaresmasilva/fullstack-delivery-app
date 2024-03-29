@@ -58,7 +58,7 @@ export default class OrderController {
     const { id: orderId } = req.params;
     const { status } = req.body;
     try {
-      const response = await this.service.getOrder({
+      const response = await this.service.updateStatus({
         orderId: Number(orderId),
         userField: `${role}Id`,
         userId,

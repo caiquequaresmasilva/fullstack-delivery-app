@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { makeAuthMiddleware, makeOrderController } from '../../factories';
-import { RequestWithUser, roleGuard } from '../middlewares';
+import { RequestWithUser, roleGuard, statusMiddleware } from '../middlewares';
 
 const orderRoutes = Router();
 const controller = makeOrderController();
@@ -24,8 +24,11 @@ orderRoutes.get('/:id', (req, res, next) =>
   controller.getOrder(req as unknown as RequestWithUser, res, next),
 );
 
-orderRoutes.patch('/:id', (req, res, next) =>
-  controller.updateStatus(req as unknown as RequestWithUser, res, next),
+orderRoutes.patch(
+  '/:id',
+  (req, res, next) => statusMiddleware(req as unknown as RequestWithUser, res, next),
+  (req, res, next) =>
+    controller.updateStatus(req as unknown as RequestWithUser, res, next),
 );
 
 export default orderRoutes;
