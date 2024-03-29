@@ -1,25 +1,30 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider  = "postgresql"
   url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
+  schemas = ["delivery_app"]
 }
 
-// DELIVERY APP SCHEMA
-enum Role {
+enum DeliveryRole {
   customer
   seller
   admin
+  @@map("role")
+  @@schema("delivery_app")
 }
 
-enum Status {
+enum DeliveryStatus {
   Pending
   Preparing
   Moving
-  Delivered 
+  Delivered
+  @@map("status")
+  @@schema("delivery_app") 
 }
 
 model DeliveryUser {
@@ -27,10 +32,11 @@ model DeliveryUser {
   name String
   email String @unique
   password String
-  role Role @default(customer)
+  role DeliveryRole @default(customer)
   sellerOrders DeliveryOrder[] @relation("seller")
   customerOrders DeliveryOrder[] @relation("customer")
-  @@map("delivery_user")
+  @@map("user")
+  @@schema("delivery_app")
 }
 
 model DeliveryProduct {
@@ -39,7 +45,8 @@ model DeliveryProduct {
   imagePath String
   price Decimal @db.Decimal(4,2)
   orders DeliveryProductsOnOrders[]
-  @@map("delivery_product")
+  @@map("product")
+  @@schema("delivery_app")
 }
 
 model DeliveryOrder {
@@ -52,9 +59,10 @@ model DeliveryOrder {
   deliveryAddress String
   deliveryNumber String
   saleDate DateTime @default(now())
-  status Status @default(Pending)
+  status DeliveryStatus @default(Pending)
   products DeliveryProductsOnOrders[]
-  @@map("delivery_order")
+  @@map("order")
+  @@schema("delivery_app")
 }
 
 model DeliveryProductsOnOrders {
@@ -64,5 +72,6 @@ model DeliveryProductsOnOrders {
   orderId Int
   quantity Int
   @@id([productId,orderId])
-  @@map("delivery_product_order")
+  @@map("product_order")
+  @@schema("delivery_app")
 }
