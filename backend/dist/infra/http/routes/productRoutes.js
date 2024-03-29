@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const factories_1 = require("../../factories");
+const productRoutes = (0, express_1.Router)();
+const productController = (0, factories_1.makeProductController)();
+const authMiddleware = (0, factories_1.makeAuthMiddleware)();
+productRoutes.use((req, res, next) => authMiddleware.handle(req, res, next));
+productRoutes.get('/', (req, res, next) => productController.getAll(req, res, next));
+exports.default = productRoutes;

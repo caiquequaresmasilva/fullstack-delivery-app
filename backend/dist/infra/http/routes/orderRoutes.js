@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const factories_1 = require("../../factories");
+const middlewares_1 = require("../middlewares");
+const orderRoutes = (0, express_1.Router)();
+const controller = (0, factories_1.makeOrderController)();
+const auth = (0, factories_1.makeAuthMiddleware)();
+orderRoutes.use((req, res, next) => auth.handle(req, res, next));
+orderRoutes.post('/', (req, res, next) => (0, middlewares_1.roleGuard)('customer')(req, res, next), middlewares_1.orderValidationMiddleware, (req, res, next) => controller.create(req, res, next));
+orderRoutes.get('/', (req, res, next) => controller.getOrders(req, res, next));
+orderRoutes.get('/:id', (req, res, next) => controller.getOrder(req, res, next));
+orderRoutes.patch('/:id', (req, res, next) => (0, middlewares_1.statusMiddleware)(req, res, next), (req, res, next) => controller.updateStatus(req, res, next));
+exports.default = orderRoutes;

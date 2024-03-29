@@ -18,17 +18,20 @@ class App {
     _config() {
         const accessControl = (_req, res, next) => {
             res.header('Access-Control-Allow-Origin', '*');
-            res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS,PUT');
+            res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,PATCH,PUT');
             res.header('Access-Control-Allow-Headers', '*');
             next();
         };
         this.app.use(accessControl);
         this.app.use((0, cors_1.default)());
         this.app.use(express_1.default.json());
+        this.app.use(express_1.default.static('public'));
         this.app.use((0, morgan_1.default)('common'));
     }
     setRoutes() {
         this.app.use('/user', routes_1.userRoutes);
+        this.app.use('/product', routes_1.productRoutes);
+        this.app.use('/order', routes_1.orderRoutes);
         this.app.get('/', (_req, res) => {
             res.status(200).send('Delivery API Running!');
         });
