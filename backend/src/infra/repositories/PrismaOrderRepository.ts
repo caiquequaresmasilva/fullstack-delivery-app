@@ -147,4 +147,18 @@ export default class PrismaOrderRepository implements OrderRepository {
       },
     });
   }
+
+  async getStatus({
+    userField,
+    userId,
+    orderId,
+  }: QueryParams): Promise<Status | null> {
+    const order = await this.prisma.deliveryOrder.findUnique({
+      where: {
+        id: orderId,
+        [userField]: userId,
+      },
+    });
+    return order ? order.status : null;
+  }
 }
