@@ -1,6 +1,6 @@
 import { ProductRepository } from '../../application/repositories';
-import { prismaClient } from '../database/prisma/prismaClient';
 import { Decimal } from '@prisma/client/runtime/library';
+import prismaClient from '../database/prisma/prismaClient';
 export type ProductProps = {
   id: string;
   name: string;
