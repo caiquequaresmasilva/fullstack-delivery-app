@@ -33,6 +33,7 @@ export default class PrismaUserRepository implements UserRepository {
       },
     });
   }
+
   async create(data: User): Promise<Id<string>> {
     const { id } = await this.prisma.deliveryUser.create({
       data: data.toJSON(),

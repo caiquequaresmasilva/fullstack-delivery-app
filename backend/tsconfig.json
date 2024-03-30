@@ -112,7 +112,6 @@
   "include": ["src/**/*","test/unit/**/*"],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts",
-    "test"
+    "test/**/*"
 ]
 }
