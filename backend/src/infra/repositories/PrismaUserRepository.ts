@@ -1,4 +1,3 @@
-import { PasswordEmailError } from '../../application/errors';
 import { UserRepository } from '../../application/repositories';
 import { User } from '../../domain';
 import prismaClient from '../database/prisma/prismaClient';
