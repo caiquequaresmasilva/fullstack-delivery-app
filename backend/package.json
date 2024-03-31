@@ -12,7 +12,7 @@
     "build": "rimraf dist && tsc",
     "ts-check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
-    "test": "jest",
+    "test": "TOKEN_SECRET=TESTTOKEN jest",
     "postinstall": "prisma generate"
   },
   "author": "Caíque Quaresma Silva",
