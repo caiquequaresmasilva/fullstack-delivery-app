@@ -11,13 +11,13 @@
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "start": "npx dotenv -e .env.local -- ts-node src/server.ts",
-    "set-db": "npx prisma migrate deploy && npx prisma db seed",
-    "test:unit": "npx dotenv -e .env.test -- jest unit",
-    "test:integration": "npx dotenv -e .env.test -- npm run docker:up && npm run set-db && jest -i integration",
+    "set-db": " npx prisma migrate deploy && npx prisma db seed",
+    "test": "npx dotenv -e .env.test -- jest",
+    "test:unit": "npx dotenv -e .env.test -- jest unit --setupFilesAfterEnv '<rootDir>/mocks/prismaMock.ts'",
+    "test:integration": "npx dotenv -e .env.test -- ./scripts/run-integration-tests.sh",
     "build": "rimraf dist && tsc",
     "ts-check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
-
     "postinstall": "prisma generate"
   },
   "author": "Caíque Quaresma Silva",
@@ -43,6 +43,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.11.24",
+    "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
     "@typescript-eslint/parser": "^7.1.0",
     "eslint": "^8.57.0",
@@ -61,6 +62,7 @@
     "typescript": "^5.3.3"
   },
   "jest": {
+    "verbose": true,
     "moduleFileExtensions": [
       "js",
       "json",
@@ -72,10 +74,7 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "testEnvironment": "node",
-    "clearMocks": true,
-    "setupFilesAfterEnv": [
-      "<rootDir>/mocks/prismaMock.ts"
-    ]
+    "clearMocks": true
   },
   "prisma": {
     "schema": "src/infra/database/prisma/schema.prisma",
