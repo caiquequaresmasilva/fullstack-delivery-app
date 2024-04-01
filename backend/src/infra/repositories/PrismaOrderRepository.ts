@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { OrderRepository } from '../../application/repositories';
 import { Decimal } from '@prisma/client/runtime/library';
-import { prismaClient } from '../database/prisma/prismaClient';
+import prismaClient from '../database/prisma/prismaClient';
 
 type RawDBOrder = {
   totalPrice: Decimal;

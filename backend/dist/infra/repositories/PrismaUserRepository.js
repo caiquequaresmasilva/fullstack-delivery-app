@@ -1,11 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const domain_1 = require("../../domain");
-const prismaClient_1 = require("../database/prisma/prismaClient");
+const prismaClient_1 = __importDefault(require("../database/prisma/prismaClient"));
 const errors_1 = require("../errors");
 class PrismaUserRepository {
     prisma;
-    constructor(prisma = prismaClient_1.prismaClient) {
+    constructor(prisma = prismaClient_1.default) {
         this.prisma = prisma;
     }
     async delete(id) {

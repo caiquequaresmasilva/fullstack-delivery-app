@@ -1,7 +1,6 @@
-import { PasswordEmailError } from '../../application/errors';
 import { UserRepository } from '../../application/repositories';
 import { User } from '../../domain';
-import { prismaClient } from '../database/prisma/prismaClient';
+import prismaClient from '../database/prisma/prismaClient';
 import { UserNotFoundError } from '../errors';
 
 export default class PrismaUserRepository implements UserRepository {
@@ -33,6 +32,7 @@ export default class PrismaUserRepository implements UserRepository {
       },
     });
   }
+
   async create(data: User): Promise<Id<string>> {
     const { id } = await this.prisma.deliveryUser.create({
       data: data.toJSON(),
