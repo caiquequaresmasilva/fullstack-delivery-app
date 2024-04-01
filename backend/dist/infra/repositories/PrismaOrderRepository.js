@@ -1,9 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const prismaClient_1 = require("../database/prisma/prismaClient");
+const prismaClient_1 = __importDefault(require("../database/prisma/prismaClient"));
 class PrismaOrderRepository {
     prisma;
-    constructor(prisma = prismaClient_1.prismaClient) {
+    constructor(prisma = prismaClient_1.default) {
         this.prisma = prisma;
     }
     _mapProductsToDb(products) {
