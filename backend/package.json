@@ -8,11 +8,16 @@
     "node": ">=18.0.0 <19.0.0"
   },
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "start": "npx dotenv -e .env.local -- ts-node src/server.ts",
+    "set-db": "npx prisma migrate deploy && npx prisma db seed",
+    "test:unit": "npx dotenv -e .env.test -- jest unit",
+    "test:integration": "npx dotenv -e .env.test -- npm run docker:up && npm run set-db && jest -i integration",
     "build": "rimraf dist && tsc",
     "ts-check": "tsc --project tsconfig.json",
     "add-build": "git add dist",
-    "test": "TOKEN_SECRET=TESTTOKEN jest",
+
     "postinstall": "prisma generate"
   },
   "author": "Caíque Quaresma Silva",
@@ -22,6 +27,7 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "dotenv-cli": "^7.4.1",
     "express": "^4.18.3",
     "joi": "^17.12.2",
     "jsonwebtoken": "^9.0.2",
@@ -67,7 +73,9 @@
     },
     "testEnvironment": "node",
     "clearMocks": true,
-    "setupFilesAfterEnv": ["<rootDir>/mocks/prismaMock.ts"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/mocks/prismaMock.ts"
+    ]
   },
   "prisma": {
     "schema": "src/infra/database/prisma/schema.prisma",
