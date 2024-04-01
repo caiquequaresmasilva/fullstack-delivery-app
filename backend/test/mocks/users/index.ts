@@ -24,6 +24,14 @@ export function makeUserProps(role: Role, id?: boolean) {
     role,
   };
 }
+export function makeTestUserBody(role: Role) {
+  return {
+    name: `Test ${role}`,
+    email: `${role}.test@test.com`,
+    password: `${role}TEST42`,
+    role,
+  };
+}
 export function makeUser(role: Role) {
   return {
     USER: new User(makeUserProps(role)),
