@@ -12,7 +12,7 @@ type MakeRequestParams = {
   token?: string;
 };
 
-export async function makeRequest({
+export async function makePostRequest({
   token,
   endpoint,
   body,

@@ -4,7 +4,7 @@ import {
   USER_NAME_ERRORS,
   USER_PASSWORD_ERRORS,
   USER_ROLE_ERRORS,
-  makeRequest,
+  makePostRequest,
 } from './helpers';
 
 describe('User routes', () => {
@@ -19,7 +19,7 @@ describe('User routes', () => {
     const SELLER_LOGIN = getLoginUserProps('seller');
 
     it('Should allow a customer to login and get their new token', async () => {
-      const { status, body } = await makeRequest({
+      const { status, body } = await makePostRequest({
         endpoint: `${ENDPOINT}/login`,
         body: CUSTOMER_LOGIN,
       });
@@ -33,7 +33,7 @@ describe('User routes', () => {
     });
 
     it('Should allow a seller to login and get their new token', async () => {
-      const { status, body } = await makeRequest({
+      const { status, body } = await makePostRequest({
         endpoint: `${ENDPOINT}/login`,
         body: SELLER_LOGIN,
       });
@@ -47,7 +47,7 @@ describe('User routes', () => {
     });
 
     it('Should allow an admin to login and get their new token', async () => {
-      const { status, body } = await makeRequest({
+      const { status, body } = await makePostRequest({
         endpoint: `${ENDPOINT}/login`,
         body: ADMIN_LOGIN,
       });
@@ -61,7 +61,7 @@ describe('User routes', () => {
     });
 
     it('Should not allow to login with incorrect email', async () => {
-      const { status, body } = await makeRequest({
+      const { status, body } = await makePostRequest({
         endpoint: `${ENDPOINT}/login`,
         body: { email: 'null@null.com', password: 'nothing' },
       });
@@ -70,7 +70,7 @@ describe('User routes', () => {
     });
 
     it('Should not allow to login with incorrect password', async () => {
-      const { status, body } = await makeRequest({
+      const { status, body } = await makePostRequest({
         endpoint: `${ENDPOINT}/login`,
         body: { email: CUSTOMER_LOGIN.email, password: 'wrongPassword' },
       });
@@ -85,7 +85,7 @@ describe('User routes', () => {
     const NEW_ADMIN = makeTestUserBody('admin');
 
     it('Should be able to create a customer user', async () => {
-      const { status, body } = await makeRequest({
+      const { status, body } = await makePostRequest({
         endpoint: ENDPOINT,
         body: NEW_CUSTOMER,
       });
@@ -97,7 +97,7 @@ describe('User routes', () => {
     });
 
     it('Should allow an admin to create a new seller', async () => {
-      const { status, body } = await makeRequest({
+      const { status, body } = await makePostRequest({
         endpoint: ENDPOINT,
         body: NEW_SELLER,
         token: ADMIN_TOKEN,
@@ -110,7 +110,7 @@ describe('User routes', () => {
     });
 
     it('Should not allow to create an admin user', async () => {
-      const { status, body } = await makeRequest({
+      const { status, body } = await makePostRequest({
         endpoint: ENDPOINT,
         body: NEW_ADMIN,
       });
@@ -119,7 +119,7 @@ describe('User routes', () => {
     });
 
     it('Should not allow a customer to create a seller user', async () => {
-      const { status, body } = await makeRequest({
+      const { status, body } = await makePostRequest({
         endpoint: ENDPOINT,
         body: NEW_SELLER,
         token: CUSTOMER_TOKEN,
@@ -129,7 +129,7 @@ describe('User routes', () => {
     });
 
     it('Should not allow a seller to create a seller user', async () => {
-      const { status, body } = await makeRequest({
+      const { status, body } = await makePostRequest({
         endpoint: ENDPOINT,
         body: NEW_SELLER,
         token: SELLER_TOKEN,
@@ -140,7 +140,7 @@ describe('User routes', () => {
 
     it('Should not allow to create a new user with incorrect "name" format', async () => {
       USER_NAME_ERRORS.forEach(async ({ name, error }) => {
-        const { status, body } = await makeRequest({
+        const { status, body } = await makePostRequest({
           endpoint: ENDPOINT,
           body: { ...NEW_CUSTOMER, name },
         });
@@ -151,7 +151,7 @@ describe('User routes', () => {
 
     it('Should not allow to create a new user with incorrect "email" format', async () => {
       USER_EMAIL_ERRORS.forEach(async ({ email, error }) => {
-        const { status, body } = await makeRequest({
+        const { status, body } = await makePostRequest({
           endpoint: ENDPOINT,
           body: { ...NEW_CUSTOMER, email },
         });
@@ -162,7 +162,7 @@ describe('User routes', () => {
 
     it('Should not allow to create a new user with incorrect "password" format', async () => {
       USER_PASSWORD_ERRORS.forEach(async ({ password, error }) => {
-        const { status, body } = await makeRequest({
+        const { status, body } = await makePostRequest({
           endpoint: ENDPOINT,
           body: { ...NEW_CUSTOMER, password },
         });
@@ -173,13 +173,79 @@ describe('User routes', () => {
 
     it('Should not allow to create a new user with incorrect "role" format', async () => {
       USER_ROLE_ERRORS.forEach(async ({ role, error }) => {
-        const { status, body } = await makeRequest({
+        const { status, body } = await makePostRequest({
           endpoint: ENDPOINT,
           body: { ...NEW_CUSTOMER, role },
         });
         expect(status).toBe(400);
         expect(body.error).toBe(error);
       });
+    });
+  });
+
+  describe('GET /user', () => {
+    const CUSTOMER_LOGIN = getLoginUserProps('customer');
+    const ADMIN_LOGIN = getLoginUserProps('admin');
+    const SELLER_LOGIN = getLoginUserProps('seller');
+
+    it('Should allow a customer to login and get their new token', async () => {
+      const { status, body } = await makePostRequest({
+        endpoint: `${ENDPOINT}/login`,
+        body: CUSTOMER_LOGIN,
+      });
+      expect(status).toBe(200);
+      expect(body.name).toBe(CUSTOMER_LOGIN.name);
+      expect(body.role).toBe(CUSTOMER_LOGIN.role);
+      expect(body).toHaveProperty('token');
+      expect(body.token.length > 0).toBeTruthy();
+
+      CUSTOMER_TOKEN = body.token;
+    });
+
+    it('Should allow a seller to login and get their new token', async () => {
+      const { status, body } = await makePostRequest({
+        endpoint: `${ENDPOINT}/login`,
+        body: SELLER_LOGIN,
+      });
+      expect(status).toBe(200);
+      expect(body.name).toBe(SELLER_LOGIN.name);
+      expect(body.role).toBe(SELLER_LOGIN.role);
+      expect(body).toHaveProperty('token');
+      expect(body.token.length > 0).toBeTruthy();
+
+      SELLER_TOKEN = body.token;
+    });
+
+    it('Should allow an admin to login and get their new token', async () => {
+      const { status, body } = await makePostRequest({
+        endpoint: `${ENDPOINT}/login`,
+        body: ADMIN_LOGIN,
+      });
+      expect(status).toBe(200);
+      expect(body.name).toBe(ADMIN_LOGIN.name);
+      expect(body.role).toBe(ADMIN_LOGIN.role);
+      expect(body).toHaveProperty('token');
+      expect(body.token.length > 0).toBeTruthy();
+
+      ADMIN_TOKEN = body.token;
+    });
+
+    it('Should not allow to login with incorrect email', async () => {
+      const { status, body } = await makePostRequest({
+        endpoint: `${ENDPOINT}/login`,
+        body: { email: 'null@null.com', password: 'nothing' },
+      });
+      expect(status).toBe(400);
+      expect(body.error).toBe('Password or email incorrect');
+    });
+
+    it('Should not allow to login with incorrect password', async () => {
+      const { status, body } = await makePostRequest({
+        endpoint: `${ENDPOINT}/login`,
+        body: { email: CUSTOMER_LOGIN.email, password: 'wrongPassword' },
+      });
+      expect(status).toBe(400);
+      expect(body.error).toBe('Password or email incorrect');
     });
   });
 });
