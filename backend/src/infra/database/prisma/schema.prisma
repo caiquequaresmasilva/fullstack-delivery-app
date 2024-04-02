@@ -51,9 +51,9 @@ model DeliveryProduct {
 
 model DeliveryOrder {
   id Int @id @default(autoincrement())
-  customer DeliveryUser @relation("customer",fields: [customerId],references: [id])
+  customer DeliveryUser @relation("customer",fields: [customerId],references: [id],onDelete: Cascade)
   customerId String
-  seller DeliveryUser @relation("seller",fields: [sellerId],references: [id])
+  seller DeliveryUser @relation("seller",fields: [sellerId],references: [id],onDelete: Cascade)
   sellerId String
   totalPrice Decimal @db.Decimal(9,2)
   deliveryAddress String
