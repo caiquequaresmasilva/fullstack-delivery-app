@@ -1,5 +1,4 @@
 import { User } from '../../../src/domain';
-import { UserNotFoundError } from '../../../src/infra/errors';
 import { PrismaUserRepository } from '../../../src/infra/repositories';
 import { USERS_NO_PASSWORD, generateId, makeUser, makeUserProps, prismaMock } from '../../mocks';
 
@@ -46,11 +45,6 @@ describe('PrismaUserRepository', () => {
       prismaMock.deliveryUser.delete.mockResolvedValue(userProps)
       await repository.delete(userProps.id)
       expect(prismaMock.deliveryUser.delete).toHaveBeenCalled()
-    });
-
-    it('Should throw error when user not found', async () => {
-      prismaMock.deliveryUser.delete.mockRejectedValue( new Error())
-      expect(() => repository.delete("") ).rejects.toThrow(UserNotFoundError)
     });
   });
 });

@@ -1,20 +1,15 @@
 import { UserRepository } from '../../application/repositories';
 import { User } from '../../domain';
 import prismaClient from '../database/prisma/prismaClient';
-import { UserNotFoundError } from '../errors';
 
 export default class PrismaUserRepository implements UserRepository {
   constructor(private readonly prisma = prismaClient) {}
   async delete(id: string): Promise<void> {
-    try {
-      await this.prisma.deliveryUser.delete({
-        where: {
-          id,
-        },
-      });
-    } catch (error) {
-      throw new UserNotFoundError();
-    }
+    await this.prisma.deliveryUser.delete({
+      where: {
+        id,
+      },
+    });
   }
 
   async getUsers(): Promise<UserWithoutPassword[]> {

@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { User } from '../../../src/domain';
 
-type Role = 'customer' | 'seller' | 'admin';
+export type Role = 'customer' | 'seller' | 'admin';
 type UserWithoutPassword = {
   id: string;
   name: string;

@@ -1,9 +1,15 @@
-import { getLoginUserProps, makeTestUserBody } from '../mocks/users';
+import {
+  EXPIRED_TOKEN,
+  getLoginUserProps,
+  makeTestUserBody,
+} from '../mocks/users';
 import {
   USER_EMAIL_ERRORS,
   USER_NAME_ERRORS,
   USER_PASSWORD_ERRORS,
   USER_ROLE_ERRORS,
+  getIdsToDelete,
+  makeGetRequest,
   makePostRequest,
 } from './helpers';
 
@@ -12,6 +18,8 @@ describe('User routes', () => {
   let CUSTOMER_TOKEN: string;
   let ADMIN_TOKEN: string;
   let SELLER_TOKEN: string;
+  let customerToDelete: string;
+  let sellerToDelete: string;
 
   describe('POST /user/login', () => {
     const CUSTOMER_LOGIN = getLoginUserProps('customer');
@@ -184,68 +192,58 @@ describe('User routes', () => {
   });
 
   describe('GET /user', () => {
-    const CUSTOMER_LOGIN = getLoginUserProps('customer');
-    const ADMIN_LOGIN = getLoginUserProps('admin');
-    const SELLER_LOGIN = getLoginUserProps('seller');
-
-    it('Should allow a customer to login and get their new token', async () => {
-      const { status, body } = await makePostRequest({
-        endpoint: `${ENDPOINT}/login`,
-        body: CUSTOMER_LOGIN,
+    it('Should allow an admin to get the list of customers and sellers', async () => {
+      const { status, body } = await makeGetRequest({
+        endpoint: ENDPOINT,
+        token: ADMIN_TOKEN,
       });
+
       expect(status).toBe(200);
-      expect(body.name).toBe(CUSTOMER_LOGIN.name);
-      expect(body.role).toBe(CUSTOMER_LOGIN.role);
-      expect(body).toHaveProperty('token');
-      expect(body.token.length > 0).toBeTruthy();
+      expect(Array.isArray(body)).toBeTruthy();
+      expect(body.length).toBe(4);
+      expect(body[0]).toHaveProperty('id');
+      expect(body[0]).toHaveProperty('name');
+      expect(body[0]).toHaveProperty('role');
+      expect(body[0]).toHaveProperty('email');
 
-      CUSTOMER_TOKEN = body.token;
+      const { customerId, sellerId } = getIdsToDelete(body);
+      customerToDelete = customerId;
+      sellerToDelete = sellerId;
     });
 
-    it('Should allow a seller to login and get their new token', async () => {
-      const { status, body } = await makePostRequest({
-        endpoint: `${ENDPOINT}/login`,
-        body: SELLER_LOGIN,
+    it('Should not allow a customer to get the list of users', async () => {
+      const { status, body } = await makeGetRequest({
+        endpoint: ENDPOINT,
+        token: CUSTOMER_TOKEN,
       });
-      expect(status).toBe(200);
-      expect(body.name).toBe(SELLER_LOGIN.name);
-      expect(body.role).toBe(SELLER_LOGIN.role);
-      expect(body).toHaveProperty('token');
-      expect(body.token.length > 0).toBeTruthy();
-
-      SELLER_TOKEN = body.token;
+      expect(status).toBe(403);
+      expect(body.error).toBe('You are not allowed to perform this action');
     });
 
-    it('Should allow an admin to login and get their new token', async () => {
-      const { status, body } = await makePostRequest({
-        endpoint: `${ENDPOINT}/login`,
-        body: ADMIN_LOGIN,
+    it('Should not allow a seller to get the list of users', async () => {
+      const { status, body } = await makeGetRequest({
+        endpoint: ENDPOINT,
+        token: SELLER_TOKEN,
       });
-      expect(status).toBe(200);
-      expect(body.name).toBe(ADMIN_LOGIN.name);
-      expect(body.role).toBe(ADMIN_LOGIN.role);
-      expect(body).toHaveProperty('token');
-      expect(body.token.length > 0).toBeTruthy();
-
-      ADMIN_TOKEN = body.token;
+      expect(status).toBe(403);
+      expect(body.error).toBe('You are not allowed to perform this action');
     });
 
-    it('Should not allow to login with incorrect email', async () => {
-      const { status, body } = await makePostRequest({
-        endpoint: `${ENDPOINT}/login`,
-        body: { email: 'null@null.com', password: 'nothing' },
+    it('Should not allow access without an authentication token', async () => {
+      const { status, body } = await makeGetRequest({
+        endpoint: ENDPOINT,
       });
-      expect(status).toBe(400);
-      expect(body.error).toBe('Password or email incorrect');
+      expect(status).toBe(401);
+      expect(body.error).toBe('Invalid authentication token');
     });
 
-    it('Should not allow to login with incorrect password', async () => {
-      const { status, body } = await makePostRequest({
-        endpoint: `${ENDPOINT}/login`,
-        body: { email: CUSTOMER_LOGIN.email, password: 'wrongPassword' },
+    it('Should not allow access with an expired authentication token', async () => {
+      const { status, body } = await makeGetRequest({
+        endpoint: ENDPOINT,
+        token: EXPIRED_TOKEN,
       });
-      expect(status).toBe(400);
-      expect(body.error).toBe('Password or email incorrect');
+      expect(status).toBe(401);
+      expect(body.error).toBe('Your token has expired. Login again.');
     });
   });
 });

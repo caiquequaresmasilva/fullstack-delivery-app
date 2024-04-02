@@ -1,6 +1,11 @@
 import { User } from '../../domain';
 import { HashManager, TokenGenerator } from '../adapters';
-import { PasswordEmailError, UserAlreadyExistsError } from '../errors';
+import {
+  DeleteAdminError,
+  PasswordEmailError,
+  UserAlreadyExistsError,
+  UserNotFoundError,
+} from '../errors';
 import { UserRepository } from '../repositories';
 
 export default class UserService {
@@ -57,6 +62,13 @@ export default class UserService {
   }
 
   async delete(id: string) {
+    const user = await this.repo.findByUnique({ id });
+    if (!user) {
+      throw new UserNotFoundError();
+    }
+    if (user.role === 'admin') {
+      throw new DeleteAdminError();
+    }
     await this.repo.delete(id);
   }
 }

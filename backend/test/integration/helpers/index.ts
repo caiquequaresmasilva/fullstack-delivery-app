@@ -1,5 +1,6 @@
 import { app } from '../../../src/infra/App';
 import request from 'supertest';
+import { Role } from '../../mocks/users';
 
 const makeHeaders = (token: string) => ({
   Authorization: `Bearer ${token}`,
@@ -10,6 +11,13 @@ type MakeRequestParams = {
   endpoint: string;
   body?: any;
   token?: string;
+};
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
 };
 
 export async function makePostRequest({
@@ -109,3 +117,13 @@ export const USER_ROLE_ERRORS = [
     error: '"Role" is required',
   },
 ];
+
+export function getIdsToDelete(users: User[]) {
+  const { id: customerId } = users.find(
+    ({ email }) => email === `customer.test@test.com`,
+  ) as User;
+  const { id: sellerId } = users.find(
+    ({ email }) => email === `seller.test@test.com`,
+  ) as User;
+  return { customerId, sellerId };
+}

@@ -1,8 +1,9 @@
 import {
+  DeleteAdminError,
   PasswordEmailError,
   UserAlreadyExistsError,
+  UserNotFoundError,
 } from '../../../src/application/errors';
-import { UserNotFoundError } from '../../../src/infra/errors';
 import { mockUserService } from '../../factories';
 import { USERS_NO_PASSWORD, makeUser, makeUserProps } from '../../mocks';
 
@@ -82,13 +83,21 @@ describe('UserService', () => {
 
   describe('# delete', () => {
     it('Should be able to delete an user that exists', async () => {
+      const { USER } = makeUser('customer');
+      mockedRepo.findByUnique.mockResolvedValue(USER);
       await service.delete('userId');
       expect(mockedRepo.delete).toHaveBeenCalledWith('userId');
     });
 
     it('Should throw "UserNotFoundError" when user not found', async () => {
-      mockedRepo.delete.mockRejectedValue(new UserNotFoundError());
+      mockedRepo.findByUnique.mockResolvedValue(null);
       expect(() => service.delete('userId')).rejects.toThrow(UserNotFoundError);
+    });
+
+    it('Should throw "DeleteAdminError" when attempting to delete admin user', async () => {
+      const { USER } = makeUser('admin');
+      mockedRepo.findByUnique.mockResolvedValue(USER);
+      expect(() => service.delete('userId')).rejects.toThrow(DeleteAdminError);
     });
   });
 });
