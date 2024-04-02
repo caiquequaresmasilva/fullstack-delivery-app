@@ -2,7 +2,7 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { generateId } from '../users';
 import { DeliveryStatus } from '@prisma/client';
 
-type Status = 'Pending' | 'Preparing' | 'Moving' | 'Delivered';
+export type Status = 'Pending' | 'Preparing' | 'Moving' | 'Delivered';
 type Product = {
   id: string;
   name: string;
@@ -244,3 +244,9 @@ export const ORDER_PRODUCTS_ERRORS = [
     error: 'The list of products is empty',
   },
 ];
+
+export function makeStatus(status: Status) {
+  return {
+    status,
+  };
+}
