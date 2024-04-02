@@ -24,7 +24,9 @@ export default class App {
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.static('public'));
-    this.app.use(morgan('common'));
+    this.app.use(
+      morgan('common', { skip: (req, res) => process.env.NODE_ENV === 'test' }),
+    );
   }
 
   private setRoutes(): void {
