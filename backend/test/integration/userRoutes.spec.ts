@@ -1,3 +1,4 @@
+import prismaClient from '../../src/infra/database/prisma/prismaClient';
 import {
   EXPIRED_TOKEN,
   getLoginUserProps,
@@ -9,22 +10,26 @@ import {
   USER_PASSWORD_ERRORS,
   USER_ROLE_ERRORS,
   getIdsToDelete,
+  makeDeleteRequest,
   makeGetRequest,
   makePostRequest,
 } from './helpers';
 
 describe('User routes', () => {
   const ENDPOINT = '/user';
+  const CUSTOMER_LOGIN = getLoginUserProps('customer');
+  const ADMIN_LOGIN = getLoginUserProps('admin');
+  const SELLER_LOGIN = getLoginUserProps('seller');
+
   let CUSTOMER_TOKEN: string;
   let ADMIN_TOKEN: string;
   let SELLER_TOKEN: string;
   let customerToDelete: string;
   let sellerToDelete: string;
+  let adminToDelete: string;
 
   describe('POST /user/login', () => {
-    const CUSTOMER_LOGIN = getLoginUserProps('customer');
-    const ADMIN_LOGIN = getLoginUserProps('admin');
-    const SELLER_LOGIN = getLoginUserProps('seller');
+
 
     it('Should allow a customer to login and get their new token', async () => {
       const { status, body } = await makePostRequest({
@@ -240,6 +245,89 @@ describe('User routes', () => {
     it('Should not allow access with an expired authentication token', async () => {
       const { status, body } = await makeGetRequest({
         endpoint: ENDPOINT,
+        token: EXPIRED_TOKEN,
+      });
+      expect(status).toBe(401);
+      expect(body.error).toBe('Your token has expired. Login again.');
+    });
+  });
+
+  describe('DELETE /user:id', () => {
+    it('Should allow an admin to delete a customer', async () => {
+      const { status, body } = await makeDeleteRequest({
+        endpoint: `${ENDPOINT}/${customerToDelete}`,
+        token: ADMIN_TOKEN,
+      });
+      const { body: users } = await makeGetRequest({
+        endpoint: ENDPOINT,
+        token: ADMIN_TOKEN,
+      });
+      expect(status).toBe(200);
+      expect(body.message).toBe('User deleted');
+      expect(users.length).toBe(3);
+      expect(users.some((user: { id: string; }) => user.id === customerToDelete)).toBeFalsy();
+    });
+
+    it('Should allow an admin to delete a seller', async () => {
+      const { status, body } = await makeDeleteRequest({
+        endpoint: `${ENDPOINT}/${sellerToDelete}`,
+        token: ADMIN_TOKEN,
+      });
+      const { body: users } = await makeGetRequest({
+        endpoint: ENDPOINT,
+        token: ADMIN_TOKEN,
+      });
+      expect(status).toBe(200);
+      expect(body.message).toBe('User deleted');
+      expect(users.length).toBe(2);
+      expect(users.some((user: { id: string; }) => user.id === sellerToDelete)).toBeFalsy();
+    });
+
+    it('Should not allow to delete an admin user', async () => {
+      const admin = await prismaClient.deliveryUser.findUnique({
+        where:{
+          email: ADMIN_LOGIN.email
+        }
+      })
+
+      const { status, body } = await makeDeleteRequest({
+        endpoint: `${ENDPOINT}/${admin?.id}`,
+        token: ADMIN_TOKEN,
+      });
+      expect(status).toBe(403)
+      expect(body.error).toBe('You are not allowed to perform this action')
+      adminToDelete = admin?.id || ""
+    });
+
+    it('Should not allow a customer to delete an user', async () => {
+      const { status, body } = await makeDeleteRequest({
+        endpoint: `${ENDPOINT}/${adminToDelete}`,
+        token: CUSTOMER_TOKEN,
+      });
+      expect(status).toBe(403)
+      expect(body.error).toBe('You are not allowed to perform this action')
+    });
+
+    it('Should not allow a seller to delete an user', async () => {
+      const { status, body } = await makeDeleteRequest({
+        endpoint: `${ENDPOINT}/${adminToDelete}`,
+        token: SELLER_TOKEN,
+      });
+      expect(status).toBe(403)
+      expect(body.error).toBe('You are not allowed to perform this action')
+    });
+
+    it('Should not allow access without an authentication token', async () => {
+      const { status, body } = await makeDeleteRequest({
+        endpoint: `${ENDPOINT}/${adminToDelete}`,
+      });
+      expect(status).toBe(401);
+      expect(body.error).toBe('Invalid authentication token');
+    });
+
+    it('Should not allow access with an expired authentication token', async () => {
+      const { status, body } = await makeDeleteRequest({
+        endpoint: `${ENDPOINT}/${adminToDelete}`,
         token: EXPIRED_TOKEN,
       });
       expect(status).toBe(401);
