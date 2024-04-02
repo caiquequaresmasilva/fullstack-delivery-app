@@ -8,7 +8,7 @@ const makeHeaders = (token: string) => ({
 
 type MakeRequestParams = {
   endpoint: string;
-  body: any;
+  body?: any;
   token?: string;
 };
 
@@ -19,6 +19,32 @@ export async function makePostRequest({
 }: MakeRequestParams) {
   return request(app)
     .post(endpoint)
+    .set(makeHeaders(token || ''))
+    .send(body);
+}
+
+export async function makeGetRequest({ token, endpoint }: MakeRequestParams) {
+  return request(app)
+    .get(endpoint)
+    .set(makeHeaders(token || ''));
+}
+
+export async function makeDeleteRequest({
+  token,
+  endpoint,
+}: MakeRequestParams) {
+  return request(app)
+    .delete(endpoint)
+    .set(makeHeaders(token || ''));
+}
+
+export async function makePatchRequest({
+  token,
+  endpoint,
+  body,
+}: MakeRequestParams) {
+  return request(app)
+    .patch(endpoint)
     .set(makeHeaders(token || ''))
     .send(body);
 }
@@ -70,16 +96,16 @@ export const USER_PASSWORD_ERRORS = [
 
 export const USER_ROLE_ERRORS = [
   {
-    role:"nothing" ,
-    error: "\"role\" must be one of [customer, seller, admin]",
+    role: 'nothing',
+    error: '"role" must be one of [customer, seller, admin]',
   },
   {
     role: 42,
-    error: "\"role\" must be one of [customer, seller, admin]. \"Role\" should be a string",
+    error:
+      '"role" must be one of [customer, seller, admin]. "Role" should be a string',
   },
   {
     role: undefined,
     error: '"Role" is required',
   },
 ];
-
