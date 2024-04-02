@@ -41,6 +41,15 @@ export function makeUser(role: Role) {
   };
 }
 
+export function getLoginUserProps(role:Role){
+  return {
+    name: role[0].toUpperCase() + role.slice(1),
+    email: `${role}@${role}.com`,
+    password: `${role}${role.toUpperCase()}42`,
+    role,
+  };
+}
+
 export const USERS_NO_PASSWORD: UserWithoutPassword[] = [
   {
     id: generateId(),
