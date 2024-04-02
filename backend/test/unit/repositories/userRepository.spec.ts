@@ -21,13 +21,13 @@ describe('PrismaUserRepository', () => {
     it('Should return a domain User if found', async () => {
       const userProps = makeUserProps('customer', true);
       prismaMock.deliveryUser.findUnique.mockResolvedValue(userProps);
-      const user = await repository.findByEmail(userProps.email);
+      const user = await repository.findByUnique({email: userProps.email});
       expect(user).toBeInstanceOf(User);
       expect(user?.toJSON()).toEqual(userProps);
     });
     it('Should return "null" if user not found', async () => {
       prismaMock.deliveryUser.findUnique.mockResolvedValue(null);
-      const user = await repository.findByEmail("");
+      const user = await repository.findByUnique({email: ""});
       expect(user).toBeNull();
     });
   });

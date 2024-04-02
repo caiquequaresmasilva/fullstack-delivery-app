@@ -40,10 +40,11 @@ export default class PrismaUserRepository implements UserRepository {
     return { id };
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByUnique({ email, id }: FindByUniqueParams): Promise<User | null> {
     const user = await this.prisma.deliveryUser.findUnique({
       where: {
         email,
+        id,
       },
     });
     return user ? new User(user) : user;

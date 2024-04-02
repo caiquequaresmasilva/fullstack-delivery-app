@@ -9,6 +9,11 @@ type QueryParams = {
   userId: string;
 };
 
+type FindByUniqueParams = {
+  email?: string;
+  id?: string;
+};
+
 // USER
 type UserProps = {
   name: string;
