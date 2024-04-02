@@ -5,23 +5,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const domain_1 = require("../../domain");
 const prismaClient_1 = __importDefault(require("../database/prisma/prismaClient"));
-const errors_1 = require("../errors");
 class PrismaUserRepository {
     prisma;
     constructor(prisma = prismaClient_1.default) {
         this.prisma = prisma;
     }
     async delete(id) {
-        try {
-            await this.prisma.deliveryUser.delete({
-                where: {
-                    id,
-                },
-            });
-        }
-        catch (error) {
-            throw new errors_1.UserNotFoundError();
-        }
+        await this.prisma.deliveryUser.delete({
+            where: {
+                id,
+            },
+        });
     }
     async getUsers() {
         return this.prisma.deliveryUser.findMany({
@@ -44,10 +38,11 @@ class PrismaUserRepository {
         });
         return { id };
     }
-    async findByEmail(email) {
+    async findByUnique({ email, id }) {
         const user = await this.prisma.deliveryUser.findUnique({
             where: {
                 email,
+                id,
             },
         });
         return user ? new domain_1.User(user) : user;
