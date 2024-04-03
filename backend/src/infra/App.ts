@@ -8,6 +8,8 @@ import swaggerDocs from '../infra/http/doc/swagger.json';
 
 export default class App {
   public app: express.Express;
+  private _CSS_URL =
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui.min.css';
   constructor() {
     this.app = express();
     this._config();
@@ -29,7 +31,11 @@ export default class App {
     this.app.use(
       morgan('common', { skip: (req, res) => process.env.NODE_ENV === 'test' }),
     );
-    this.app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+    this.app.use(
+      '/doc',
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerDocs, { customCssUrl: this._CSS_URL }),
+    );
   }
 
   private setRoutes(): void {
@@ -38,7 +44,7 @@ export default class App {
     this.app.use('/order', orderRoutes);
 
     this.app.get('/', (_req, res) => {
-      res.redirect("doc")
+      res.redirect('doc');
     });
 
     this.app.use(errorMiddleware);
