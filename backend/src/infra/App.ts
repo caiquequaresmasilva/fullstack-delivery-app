@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { orderRoutes, productRoutes, userRoutes } from './http/routes';
 import { errorMiddleware } from './http/middlewares';
-import swaggerDocs from '../../public/doc/swagger.json';
+import swaggerDocs from '../infra/http/doc/swagger.json';
 
 export default class App {
   public app: express.Express;
@@ -32,7 +32,12 @@ export default class App {
     this.app.use(
       '/doc',
       swaggerUi.serve,
-      swaggerUi.setup(swaggerDocs),
+      swaggerUi.setup(swaggerDocs, {
+        customJs:
+          'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-bundle.min.js',
+        customCss:
+          'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui.min.css',
+      }),
     );
   }
 
