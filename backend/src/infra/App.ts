@@ -1,8 +1,10 @@
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan';
 import cors from 'cors';
 import { orderRoutes, productRoutes, userRoutes } from './http/routes';
 import { errorMiddleware } from './http/middlewares';
+import swaggerDocs from '../infra/http/doc/swagger.json';
 
 export default class App {
   public app: express.Express;
@@ -27,6 +29,7 @@ export default class App {
     this.app.use(
       morgan('common', { skip: (req, res) => process.env.NODE_ENV === 'test' }),
     );
+    this.app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
   }
 
   private setRoutes(): void {
@@ -35,7 +38,7 @@ export default class App {
     this.app.use('/order', orderRoutes);
 
     this.app.get('/', (_req, res) => {
-      res.status(200).send('Delivery API Running!');
+      res.redirect("doc")
     });
 
     this.app.use(errorMiddleware);

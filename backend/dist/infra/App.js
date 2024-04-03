@@ -5,10 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const express_1 = __importDefault(require("express"));
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const routes_1 = require("./http/routes");
 const middlewares_1 = require("./http/middlewares");
+const swagger_json_1 = __importDefault(require("../infra/http/doc/swagger.json"));
 class App {
     app;
     constructor() {
@@ -28,13 +30,14 @@ class App {
         this.app.use(express_1.default.json());
         this.app.use(express_1.default.static('public'));
         this.app.use((0, morgan_1.default)('common', { skip: (req, res) => process.env.NODE_ENV === 'test' }));
+        this.app.use('/doc', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
     }
     setRoutes() {
         this.app.use('/user', routes_1.userRoutes);
         this.app.use('/product', routes_1.productRoutes);
         this.app.use('/order', routes_1.orderRoutes);
         this.app.get('/', (_req, res) => {
-            res.status(200).send('Delivery API Running!');
+            res.redirect("doc");
         });
         this.app.use(middlewares_1.errorMiddleware);
     }
