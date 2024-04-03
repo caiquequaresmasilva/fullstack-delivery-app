@@ -33,8 +33,8 @@ export default class App {
       '/doc',
       swaggerUi.serve,
       swaggerUi.setup(swaggerDocs,{
-        customJs:"'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui-bundle.min.js'",
-        customCssUrl:"'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css'"
+        customJs:"https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui-bundle.min.js",
+        customCssUrl:"https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css"
       }),
     );
   }
