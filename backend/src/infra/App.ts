@@ -8,8 +8,6 @@ import swaggerDocs from '../infra/http/doc/swagger.json';
 
 export default class App {
   public app: express.Express;
-  private _CSS_URL =
-    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui.min.css';
   constructor() {
     this.app = express();
     this._config();
@@ -34,7 +32,10 @@ export default class App {
     this.app.use(
       '/doc',
       swaggerUi.serve,
-      swaggerUi.setup(swaggerDocs, { customCssUrl: this._CSS_URL }),
+      swaggerUi.setup(swaggerDocs,{
+        customJs:"https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui-bundle.min.js",
+        customCssUrl:"https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css"
+      }),
     );
   }
 

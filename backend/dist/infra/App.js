@@ -30,14 +30,17 @@ class App {
         this.app.use(express_1.default.json());
         this.app.use(express_1.default.static('public'));
         this.app.use((0, morgan_1.default)('common', { skip: (req, res) => process.env.NODE_ENV === 'test' }));
-        this.app.use('/doc', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
+        this.app.use('/doc', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default, {
+            customJs: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui-bundle.min.js",
+            customCssUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css"
+        }));
     }
     setRoutes() {
         this.app.use('/user', routes_1.userRoutes);
         this.app.use('/product', routes_1.productRoutes);
         this.app.use('/order', routes_1.orderRoutes);
         this.app.get('/', (_req, res) => {
-            res.redirect("doc");
+            res.redirect('doc');
         });
         this.app.use(middlewares_1.errorMiddleware);
     }
