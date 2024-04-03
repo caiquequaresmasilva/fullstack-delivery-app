@@ -29,11 +29,11 @@ export default class App {
     this.app.use(
       morgan('common', { skip: (req, res) => process.env.NODE_ENV === 'test' }),
     );
-    // this.app.use(
-    //   '/doc',
-    //   swaggerUi.serve,
-    //   swaggerUi.setup(swaggerDocs),
-    // );
+    this.app.use(
+      '/doc',
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerDocs),
+    );
   }
 
   private setRoutes(): void {
