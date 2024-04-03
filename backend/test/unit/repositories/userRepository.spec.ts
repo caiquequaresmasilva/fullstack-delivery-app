@@ -1,5 +1,4 @@
 import { User } from '../../../src/domain';
-import { UserNotFoundError } from '../../../src/infra/errors';
 import { PrismaUserRepository } from '../../../src/infra/repositories';
 import { USERS_NO_PASSWORD, generateId, makeUser, makeUserProps, prismaMock } from '../../mocks';
 
@@ -21,13 +20,13 @@ describe('PrismaUserRepository', () => {
     it('Should return a domain User if found', async () => {
       const userProps = makeUserProps('customer', true);
       prismaMock.deliveryUser.findUnique.mockResolvedValue(userProps);
-      const user = await repository.findByEmail(userProps.email);
+      const user = await repository.findByUnique({email: userProps.email});
       expect(user).toBeInstanceOf(User);
       expect(user?.toJSON()).toEqual(userProps);
     });
     it('Should return "null" if user not found', async () => {
       prismaMock.deliveryUser.findUnique.mockResolvedValue(null);
-      const user = await repository.findByEmail("");
+      const user = await repository.findByUnique({email: ""});
       expect(user).toBeNull();
     });
   });
@@ -46,11 +45,6 @@ describe('PrismaUserRepository', () => {
       prismaMock.deliveryUser.delete.mockResolvedValue(userProps)
       await repository.delete(userProps.id)
       expect(prismaMock.deliveryUser.delete).toHaveBeenCalled()
-    });
-
-    it('Should throw error when user not found', async () => {
-      prismaMock.deliveryUser.delete.mockRejectedValue( new Error())
-      expect(() => repository.delete("") ).rejects.toThrow(UserNotFoundError)
     });
   });
 });

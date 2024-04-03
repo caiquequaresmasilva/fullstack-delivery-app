@@ -1,6 +1,11 @@
 import { User } from '../../domain';
 import { HashManager, TokenGenerator } from '../adapters';
-import { PasswordEmailError, UserAlreadyExistsError } from '../errors';
+import {
+  DeleteAdminError,
+  PasswordEmailError,
+  UserAlreadyExistsError,
+  UserNotFoundError,
+} from '../errors';
 import { UserRepository } from '../repositories';
 
 export default class UserService {
@@ -24,7 +29,7 @@ export default class UserService {
     role,
     name,
   }: UserProps): Promise<UserResponse> {
-    const userCheck = await this.repo.findByEmail(email);
+    const userCheck = await this.repo.findByUnique({ email });
     if (userCheck) {
       throw new UserAlreadyExistsError();
     }
@@ -40,7 +45,7 @@ export default class UserService {
   }
 
   async login({ email, password }: LoginProps): Promise<UserResponse> {
-    const user = await this.repo.findByEmail(email);
+    const user = await this.repo.findByUnique({ email });
     if (!user || !(await this.hash.compare(password, user.hashedPassword))) {
       throw new PasswordEmailError();
     }
@@ -57,6 +62,13 @@ export default class UserService {
   }
 
   async delete(id: string) {
+    const user = await this.repo.findByUnique({ id });
+    if (!user) {
+      throw new UserNotFoundError();
+    }
+    if (user.role === 'admin') {
+      throw new DeleteAdminError();
+    }
     await this.repo.delete(id);
   }
 }

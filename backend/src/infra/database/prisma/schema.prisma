@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["multiSchema"]
 }
 
@@ -7,13 +7,14 @@ datasource db {
   provider  = "postgresql"
   url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
-  schemas = ["delivery_app"]
+  schemas   = ["delivery_app"]
 }
 
 enum DeliveryRole {
   customer
   seller
   admin
+
   @@map("role")
   @@schema("delivery_app")
 }
@@ -23,55 +24,60 @@ enum DeliveryStatus {
   Preparing
   Moving
   Delivered
+
   @@map("status")
-  @@schema("delivery_app") 
+  @@schema("delivery_app")
 }
 
 model DeliveryUser {
-  id  String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  role DeliveryRole @default(customer)
-  sellerOrders DeliveryOrder[] @relation("seller")
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  password       String
+  role           DeliveryRole    @default(customer)
+  sellerOrders   DeliveryOrder[] @relation("seller")
   customerOrders DeliveryOrder[] @relation("customer")
+
   @@map("user")
   @@schema("delivery_app")
 }
 
 model DeliveryProduct {
-  id String @id @default(uuid())
-  name String @unique
+  id        String                     @id @default(uuid())
+  name      String                     @unique
   imagePath String
-  price Decimal @db.Decimal(4,2)
-  orders DeliveryProductsOnOrders[]
+  price     Decimal                    @db.Decimal(4, 2)
+  orders    DeliveryProductsOnOrders[]
+
   @@map("product")
   @@schema("delivery_app")
 }
 
 model DeliveryOrder {
-  id Int @id @default(autoincrement())
-  customer DeliveryUser @relation("customer",fields: [customerId],references: [id])
-  customerId String
-  seller DeliveryUser @relation("seller",fields: [sellerId],references: [id])
-  sellerId String
-  totalPrice Decimal @db.Decimal(9,2)
+  id              Int                        @id @default(autoincrement())
+  customer        DeliveryUser               @relation("customer", fields: [customerId], references: [id], onDelete: Cascade)
+  customerId      String
+  seller          DeliveryUser               @relation("seller", fields: [sellerId], references: [id], onDelete: Cascade)
+  sellerId        String
+  totalPrice      Decimal                    @db.Decimal(9, 2)
   deliveryAddress String
-  deliveryNumber String
-  saleDate DateTime @default(now())
-  status DeliveryStatus @default(Pending)
-  products DeliveryProductsOnOrders[]
+  deliveryNumber  String
+  saleDate        DateTime                   @default(now())
+  status          DeliveryStatus             @default(Pending)
+  products        DeliveryProductsOnOrders[]
+
   @@map("order")
   @@schema("delivery_app")
 }
 
 model DeliveryProductsOnOrders {
-  product DeliveryProduct @relation(fields: [productId], references: [id])
+  product   DeliveryProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
-  order DeliveryOrder @relation(fields: [orderId],references: [id])
-  orderId Int
-  quantity Int
-  @@id([productId,orderId])
+  order     DeliveryOrder   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   Int
+  quantity  Int
+
+  @@id([productId, orderId])
   @@map("product_order")
   @@schema("delivery_app")
 }

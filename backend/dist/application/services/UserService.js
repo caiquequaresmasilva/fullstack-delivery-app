@@ -19,7 +19,7 @@ class UserService {
         };
     }
     async create({ email, password, role, name, }) {
-        const userCheck = await this.repo.findByEmail(email);
+        const userCheck = await this.repo.findByUnique({ email });
         if (userCheck) {
             throw new errors_1.UserAlreadyExistsError();
         }
@@ -33,7 +33,7 @@ class UserService {
         return this._makeResponse({ name, email, role, id });
     }
     async login({ email, password }) {
-        const user = await this.repo.findByEmail(email);
+        const user = await this.repo.findByUnique({ email });
         if (!user || !(await this.hash.compare(password, user.hashedPassword))) {
             throw new errors_1.PasswordEmailError();
         }
@@ -48,6 +48,13 @@ class UserService {
         return this.repo.getUsers();
     }
     async delete(id) {
+        const user = await this.repo.findByUnique({ id });
+        if (!user) {
+            throw new errors_1.UserNotFoundError();
+        }
+        if (user.role === 'admin') {
+            throw new errors_1.DeleteAdminError();
+        }
         await this.repo.delete(id);
     }
 }

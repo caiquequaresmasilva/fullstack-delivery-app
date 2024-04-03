@@ -17,4 +17,3 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./ExpiredTokenError"), exports);
 __exportStar(require("./ForbiddenError"), exports);
 __exportStar(require("./UnauthorizedError"), exports);
-__exportStar(require("./UserNotFoundError"), exports);

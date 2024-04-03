@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { User } from '../../../src/domain';
 
-type Role = 'customer' | 'seller' | 'admin';
+export type Role = 'customer' | 'seller' | 'admin';
 type UserWithoutPassword = {
   id: string;
   name: string;
@@ -38,6 +38,15 @@ export function makeUser(role: Role) {
     ID: {
       id: generateId(),
     },
+  };
+}
+
+export function getLoginUserProps(role:Role){
+  return {
+    name: role[0].toUpperCase() + role.slice(1),
+    email: `${role}@${role}.com`,
+    password: `${role}${role.toUpperCase()}42`,
+    role,
   };
 }
 

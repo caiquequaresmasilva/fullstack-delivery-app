@@ -2,7 +2,17 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { generateId } from '../users';
 import { DeliveryStatus } from '@prisma/client';
 
-type Status = 'Pending' | 'Preparing' | 'Moving' | 'Delivered';
+export type Status = 'Pending' | 'Preparing' | 'Moving' | 'Delivered';
+type Product = {
+  id: string;
+  name: string;
+  imagePath: string;
+  price: string;
+};
+type RawProduct = {
+  id: string;
+  quantity: number;
+};
 export function makeOrder() {
   const details = {
     customerId: generateId(),
@@ -120,9 +130,123 @@ export const DOMAIN_FULL_ORDER = {
   status: DB_FULL_ORDER.status,
   customer: 'Customer',
   seller: 'Seller',
-  products: DB_FULL_ORDER.products.map(({ quantity, product: { name, price } }) => ({
-    name,
-    price,
-    quantity,
-  }))
+  products: DB_FULL_ORDER.products.map(
+    ({ quantity, product: { name, price } }) => ({
+      name,
+      price,
+      quantity,
+    }),
+  ),
 };
+
+const makeProductsArray = async (products: Product[]) => {
+  const rawProducts: RawProduct[] = [];
+  const n = products.length;
+  let totalPrice = 0;
+  let previousIndex = -1;
+  let index = 1;
+  while (index <= 3) {
+    const randomIndex = Math.floor(Math.random() * n);
+    if (randomIndex !== previousIndex) {
+      rawProducts.push({
+        id: products[randomIndex].id,
+        quantity: index,
+      });
+      totalPrice += Number(products[randomIndex].price) * index;
+      previousIndex = randomIndex;
+      index++;
+    }
+  }
+  return {
+    products: rawProducts,
+    totalPrice,
+  };
+};
+
+export async function makeTestOrder(sellerId: string, dbProducts: Product[]) {
+  const { products, totalPrice } = await makeProductsArray(dbProducts);
+  return {
+    sellerId,
+    deliveryAddress: 'Rua Integration Test',
+    deliveryNumber: '42',
+    totalPrice,
+    products,
+  };
+}
+
+export const ORDER_SELLER_ERRORS = [
+  {
+    sellerId: 42,
+    error: '"sellerId" should be a string',
+  },
+  {
+    sellerId: undefined,
+    error: '"sellerId" is required',
+  },
+  {
+    sellerId: 'notUUID',
+    error: '"sellerId" must be a valid uuid',
+  },
+];
+
+export const ORDER_ADDRESS_ERRORS = [
+  {
+    deliveryAddress: 42,
+    error: '"deliveryAddress" should be a string',
+  },
+  {
+    deliveryAddress: undefined,
+    error: '"deliveryAddress" is required',
+  },
+];
+
+export const ORDER_NUMBER_ERRORS = [
+  {
+    deliveryNumber: 42,
+    error: '"deliveryNumber" should be a string',
+  },
+  {
+    deliveryNumber: undefined,
+    error: '"deliveryNumber" is required',
+  },
+];
+
+export const ORDER_PRICE_ERRORS = [
+  {
+    totalPrice: 'NotNumber',
+    error: '"totalPrice" should be a number',
+  },
+  {
+    totalPrice: -1,
+    error: '"totalPrice" must be positive',
+  },
+  {
+    totalPrice: undefined,
+    error: '"totalPrice" is required',
+  },
+];
+
+export const ORDER_PRODUCTS_ERRORS = [
+  {
+    products: undefined,
+    error: '"products" is required',
+  },
+  {
+    products: 42,
+    error: '"products" must be an array',
+  },
+  {
+    products: ['error'],
+    error: '"products[0]" must be of type object',
+  },
+  {
+    products: [],
+    error: 'The list of products is empty',
+  },
+];
+
+export function makeStatus(status: Status) {
+  return {
+    status,
+  };
+}

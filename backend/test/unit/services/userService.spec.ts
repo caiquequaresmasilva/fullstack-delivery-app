@@ -1,8 +1,9 @@
 import {
+  DeleteAdminError,
   PasswordEmailError,
   UserAlreadyExistsError,
+  UserNotFoundError,
 } from '../../../src/application/errors';
-import { UserNotFoundError } from '../../../src/infra/errors';
 import { mockUserService } from '../../factories';
 import { USERS_NO_PASSWORD, makeUser, makeUserProps } from '../../mocks';
 
@@ -20,7 +21,7 @@ describe('UserService', () => {
         role: userProps.role,
         token: 'userToken',
       };
-      mockedRepo.findByEmail.mockResolvedValue(null);
+      mockedRepo.findByUnique.mockResolvedValue(null);
       mockedHash.generate.mockResolvedValue('hashPassword');
       mockedRepo.create.mockResolvedValue({ id });
       mockedToken.generate.mockReturnValue('userToken');
@@ -30,7 +31,7 @@ describe('UserService', () => {
 
     it('Should throw "UserAlreadyExistsError" when email already registered', async () => {
       const { USER } = makeUser('customer');
-      mockedRepo.findByEmail.mockResolvedValue(USER);
+      mockedRepo.findByUnique.mockResolvedValue(USER);
       expect(() => service.create(USER.toJSON())).rejects.toThrow(
         UserAlreadyExistsError,
       );
@@ -45,7 +46,7 @@ describe('UserService', () => {
         role: USER.role,
         token: 'userToken',
       };
-      mockedRepo.findByEmail.mockResolvedValue(USER);
+      mockedRepo.findByUnique.mockResolvedValue(USER);
       mockedHash.compare.mockResolvedValue(true);
       mockedToken.generate.mockReturnValue('userToken');
       const token = await service.login({
@@ -56,7 +57,7 @@ describe('UserService', () => {
     });
 
     it('Should throw "PasswordEmailError" when user not found', async () => {
-      mockedRepo.findByEmail.mockResolvedValue(null);
+      mockedRepo.findByUnique.mockResolvedValue(null);
       expect(() => service.login({ email: '', password: '' })).rejects.toThrow(
         PasswordEmailError,
       );
@@ -64,7 +65,7 @@ describe('UserService', () => {
 
     it('Should throw "PasswordEmailError" when password does not match', async () => {
       const { USER } = makeUser('customer');
-      mockedRepo.findByEmail.mockResolvedValue(USER);
+      mockedRepo.findByUnique.mockResolvedValue(USER);
       mockedHash.compare.mockResolvedValue(false);
       expect(() =>
         service.login({ email: USER.email, password: '' }),
@@ -82,13 +83,21 @@ describe('UserService', () => {
 
   describe('# delete', () => {
     it('Should be able to delete an user that exists', async () => {
+      const { USER } = makeUser('customer');
+      mockedRepo.findByUnique.mockResolvedValue(USER);
       await service.delete('userId');
       expect(mockedRepo.delete).toHaveBeenCalledWith('userId');
     });
 
     it('Should throw "UserNotFoundError" when user not found', async () => {
-      mockedRepo.delete.mockRejectedValue(new UserNotFoundError());
+      mockedRepo.findByUnique.mockResolvedValue(null);
       expect(() => service.delete('userId')).rejects.toThrow(UserNotFoundError);
+    });
+
+    it('Should throw "DeleteAdminError" when attempting to delete admin user', async () => {
+      const { USER } = makeUser('admin');
+      mockedRepo.findByUnique.mockResolvedValue(USER);
+      expect(() => service.delete('userId')).rejects.toThrow(DeleteAdminError);
     });
   });
 });
