@@ -35,7 +35,7 @@ export default class App {
     this.app.use('/order', orderRoutes);
 
     this.app.get('/', (_req, res) => {
-      res.status(200).send('Delivery API Running!');
+      res.redirect("doc")
     });
 
     this.app.use(errorMiddleware);
