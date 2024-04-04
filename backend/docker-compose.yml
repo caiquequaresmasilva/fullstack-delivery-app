@@ -1,13 +1,31 @@
 version: '3.9'
 
 services:
-  db:
+  test-db:
     image: postgres:15-alpine
+    profiles:
+      - test
     restart: always
-    container_name: integration-tests-prisma
+    container_name: integration-tests-db
     ports:
       - '5433:5432'
     environment:
       POSTGRES_USER: prisma
       POSTGRES_PASSWORD: prisma
       POSTGRES_DB: tests
+  dev-db:
+    image: postgres:15-alpine
+    profiles:
+      - development
+    restart: always
+    container_name: development-db
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: prisma
+      POSTGRES_PASSWORD: prisma
+      POSTGRES_DB: development
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
