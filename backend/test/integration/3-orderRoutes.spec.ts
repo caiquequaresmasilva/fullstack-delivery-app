@@ -283,6 +283,15 @@ describe('Order routes', () => {
       expect(body).toHaveProperty('totalPrice');
     });
 
+    it('Should not return an order if not found"', async () => {
+        const { status, body } = await makeGetRequest({
+          endpoint: `${ENDPOINT}/99`,
+          token: SELLER_TOKEN,
+        });
+        expect(status).toBe(404);
+        expect(body.error).toBe('Order not found');
+      });
+
     it('Should not allow access without an authentication token', async () => {
       const { status, body } = await makeGetRequest({
         endpoint: `${ENDPOINT}/${ORDER_ID}`,
