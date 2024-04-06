@@ -13,6 +13,10 @@ type UserNoPassword = {
 type Id<T> = {
   id: T;
 };
+type TokenInfo = {
+  id: string
+  name: string
+}
 type Login = {
   email: string;
   password: string;
