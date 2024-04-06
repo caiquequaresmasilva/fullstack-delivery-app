@@ -25,7 +25,7 @@ describe('UserService', () => {
       mockedHash.generate.mockResolvedValue('hashPassword');
       mockedRepo.create.mockResolvedValue({ id });
       mockedToken.generate.mockReturnValue('userToken');
-      const user = await service.create(userProps);
+      const { id: userID, ...user } = await service.create(userProps);
       expect(user).toEqual(response);
     });
 
@@ -49,7 +49,7 @@ describe('UserService', () => {
       mockedRepo.findByUnique.mockResolvedValue(USER);
       mockedHash.compare.mockResolvedValue(true);
       mockedToken.generate.mockReturnValue('userToken');
-      const token = await service.login({
+      const { id, ...token } = await service.login({
         email: USER.email,
         password: USER.hashedPassword,
       });

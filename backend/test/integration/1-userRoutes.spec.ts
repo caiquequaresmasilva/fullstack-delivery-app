@@ -40,6 +40,7 @@ describe('User routes', () => {
       expect(body.name).toBe(CUSTOMER_LOGIN.name);
       expect(body.role).toBe(CUSTOMER_LOGIN.role);
       expect(body).toHaveProperty('token');
+      expect(body).toHaveProperty('id');
       expect(body.token.length > 0).toBeTruthy();
 
       CUSTOMER_TOKEN = body.token;
@@ -54,6 +55,7 @@ describe('User routes', () => {
       expect(body.name).toBe(SELLER_LOGIN.name);
       expect(body.role).toBe(SELLER_LOGIN.role);
       expect(body).toHaveProperty('token');
+      expect(body).toHaveProperty('id');
       expect(body.token.length > 0).toBeTruthy();
 
       SELLER_TOKEN = body.token;
@@ -68,6 +70,7 @@ describe('User routes', () => {
       expect(body.name).toBe(ADMIN_LOGIN.name);
       expect(body.role).toBe(ADMIN_LOGIN.role);
       expect(body).toHaveProperty('token');
+      expect(body).toHaveProperty('id');
       expect(body.token.length > 0).toBeTruthy();
 
       ADMIN_TOKEN = body.token;
@@ -106,6 +109,7 @@ describe('User routes', () => {
       expect(body.name).toBe(NEW_CUSTOMER.name);
       expect(body.role).toBe('customer');
       expect(body).toHaveProperty('token');
+      expect(body).toHaveProperty('id');
       expect(body.token.length > 0).toBeTruthy();
     });
 
@@ -119,6 +123,7 @@ describe('User routes', () => {
       expect(body.name).toBe(NEW_SELLER.name);
       expect(body.role).toBe('seller');
       expect(body).toHaveProperty('token');
+      expect(body).toHaveProperty('id');
       expect(body.token.length > 0).toBeTruthy();
     });
 

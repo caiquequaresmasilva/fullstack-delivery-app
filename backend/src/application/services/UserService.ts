@@ -17,6 +17,7 @@ export default class UserService {
 
   private _makeResponse({ email, name, role, id }: TokenPayload): UserResponse {
     return {
+      id,
       name,
       token: this.token.generate({ name, email, role, id }),
       role,
