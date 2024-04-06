@@ -1,25 +1,26 @@
-import { PayloadAction, createSlice, isAnyOf } from "@reduxjs/toolkit";
+import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { deliveryApiSlice } from "./api";
+import { RootState } from "./store";
 
-type AuthState = {
+export type AuthState = {
   name: string;
-  role: Role;
+  id: string;
   token: string;
 };
 
 const initialState: AuthState = {
-  name: "",
-  role: "customer",
+  name: "unknown",
+  id: "",
   token: "",
 };
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuth: (state, action: PayloadAction<AuthState>) => {
-      state.token = action.payload.token;
-      state.name = action.payload.name;
-      state.role = action.payload.role;
+    logout: (state) => {
+      state.token = initialState.token;
+      state.id = initialState.id;
+      state.name = initialState.name;
     },
   },
   extraReducers: (builder) => {
@@ -28,27 +29,15 @@ export const authSlice = createSlice({
         deliveryApiSlice.endpoints.login.matchFulfilled,
         deliveryApiSlice.endpoints.createUser.matchFulfilled
       ),
-      (
-        state,
-        {
-          payload: {
-            token = initialState.token,
-            name = initialState.name,
-            role = initialState.role,
-          },
-        }
-      ) => {
-        state.token = token;
-        state.name = name;
-        state.role = role;
-
-        localStorage.setItem("token", token);
-        localStorage.setItem("name", name);
-        localStorage.setItem("role", role);
+      (state, { payload: { id, name, token } }) => {
+        state.token = token || initialState.token;
+        state.id = id || initialState.id;
+        state.name = name || initialState.name;
       }
     );
   },
 });
 
-export const { setAuth } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export const authReducer = authSlice.reducer;
+export const selectAuth = (state: RootState) => state.auth;

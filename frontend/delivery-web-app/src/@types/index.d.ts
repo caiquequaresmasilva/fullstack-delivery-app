@@ -13,6 +13,10 @@ type UserNoPassword = {
 type Id<T> = {
   id: T;
 };
+type TokenInfo = {
+  id: string;
+  name: string;
+};
 type Login = {
   email: string;
   password: string;
@@ -76,6 +80,7 @@ type HandleSubmit<T> = (body: T) => Promise<void>;
 type Role = "customer" | "seller" | "admin";
 type Status = "Pending" | "Preparing" | "Moving" | "Delivered";
 type PostUserResponse = {
+  id?: string;
   name?: string;
   role?: Role;
   token?: string;

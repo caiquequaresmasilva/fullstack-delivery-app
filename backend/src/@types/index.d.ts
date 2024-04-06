@@ -31,6 +31,7 @@ type LoginProps = Omit<UserProps, 'role' | 'name'>;
 type TokenPayload = Omit<UserProps, 'password'> & Id;
 // APPLICATION
 type UserResponse = {
+  id: string;
   name: string;
   token: string;
   role: Role;
