@@ -1,7 +1,6 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { deliveryApiSlice } from "./api";
 import { RootState } from "./store";
-import { extractFromToken } from "../common/utils";
 
 export type AuthState = {
   name: string;
@@ -21,7 +20,7 @@ export const authSlice = createSlice({
     logout: (state) => {
       state.token = initialState.token;
       state.id = initialState.id;
-      state.name = initialState.name
+      state.name = initialState.name;
     },
   },
   extraReducers: (builder) => {
@@ -30,11 +29,10 @@ export const authSlice = createSlice({
         deliveryApiSlice.endpoints.login.matchFulfilled,
         deliveryApiSlice.endpoints.createUser.matchFulfilled
       ),
-      (state, { payload: { token = initialState.token } }) => {
-        const { id, name } = extractFromToken(token);
-        state.token = token;
-        state.id = id;
-        state.name = name;
+      (state, { payload: { id, name, token } }) => {
+        state.token = token || initialState.token;
+        state.id = id || initialState.id;
+        state.name = name || initialState.name;
       }
     );
   },
