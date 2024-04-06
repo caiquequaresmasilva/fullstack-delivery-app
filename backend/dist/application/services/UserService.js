@@ -13,6 +13,7 @@ class UserService {
     }
     _makeResponse({ email, name, role, id }) {
         return {
+            id,
             name,
             token: this.token.generate({ name, email, role, id }),
             role,
